@@ -3,7 +3,8 @@ import { cookies } from "next/headers"
 
 export default async function Providers({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies()
-  const defaultOpen = cookieStore.get("sidebar_state")?.value === "true"
+  const cookie = cookieStore.get("sidebar_state")
+  const defaultOpen = cookie ? cookie.value === "true" : true
 
   return <SidebarProvider defaultOpen={defaultOpen}>{children}</SidebarProvider>
 }

@@ -2,7 +2,7 @@
 
 import { useChat } from "@ai-sdk/react"
 import { useState } from "react"
-import ChatBubble from "./ChatBubble"
+import Message from "./Message"
 
 export default function Chat() {
   const [input, setInput] = useState("")
@@ -12,7 +12,7 @@ export default function Chat() {
     <div className="flex justify-center">
       <div className="flex w-full max-w-3xl flex-col pt-14">
         {messages.map((message) => (
-          <ChatBubble key={message.id} message={message} />
+          <Message key={message.id} message={message} />
         ))}
 
         <form

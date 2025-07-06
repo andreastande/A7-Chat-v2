@@ -1,6 +1,6 @@
 import { UIMessage } from "ai"
 
-export default function ChatBubble({ message }: { message: UIMessage }) {
+export default function Message({ message }: { message: UIMessage }) {
   return (
     <div key={message.id} className="whitespace-pre-wrap">
       {message.role === "user" ? "User: " : "AI: "}

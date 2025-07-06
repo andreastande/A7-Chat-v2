@@ -1,4 +1,4 @@
-import LoginForm from "@/components/forms/LoginForm"
+import SignupForm from "@/components/forms/SignupForm"
 import SocialProvider from "@/components/SocialProvider"
 import Link from "next/link"
 
@@ -9,9 +9,11 @@ export default function Page() {
     <div className="flex w-full">
       <div className="relative flex w-full items-center justify-center lg:w-1/2">
         <div className="flex w-80 flex-col items-center">
-          <h1 className="text-4xl font-medium">Welcome Back</h1>
-          <p className="mt-4 text-center text-gray-500">Enter your email and password to access your account.</p>
-          <LoginForm />
+          <h1 className="text-4xl font-medium">Get Started</h1>
+          <p className="mt-4 text-center text-gray-500">
+            Welcome to <span className="font-semibold">A7 Chat</span> — Let&apos;s create your account.
+          </p>
+          <SignupForm />
           <div className="mt-6 flex w-full items-center gap-4">
             <div className="h-px flex-1 bg-gray-400" />
             <span className="text-sm">or continue with</span>
@@ -25,9 +27,9 @@ export default function Page() {
         </div>
 
         <p className="absolute right-12 bottom-12">
-          No account?{" "}
-          <Link href="/signup" className="bg-gradient-to-r from-blue-500 to-pink-500 bg-clip-text text-transparent">
-            Sign up!
+          Already have an account?{" "}
+          <Link href="/login" className="bg-gradient-to-r from-blue-500 to-pink-500 bg-clip-text text-transparent">
+            Log in!
           </Link>
         </p>
       </div>

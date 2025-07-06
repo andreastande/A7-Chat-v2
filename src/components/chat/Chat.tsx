@@ -10,7 +10,7 @@ export default function Chat() {
 
   return (
     <div className="flex justify-center">
-      <div className="flex flex-col w-full max-w-3xl pt-14">
+      <div className="flex w-full max-w-3xl flex-col pt-14">
         {messages.map((message) => (
           <ChatBubble key={message.id} message={message} />
         ))}
@@ -23,7 +23,7 @@ export default function Chat() {
           }}
         >
           <input
-            className="fixed bottom-0 w-full max-w-3xl p-2 mb-8 border border-zinc-300 rounded shadow-xl"
+            className="fixed bottom-0 mb-8 w-full max-w-3xl rounded border border-zinc-300 p-2 shadow-xl"
             value={input}
             placeholder="Say something..."
             onChange={(e) => setInput(e.currentTarget.value)}

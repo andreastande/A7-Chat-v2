@@ -1,5 +1,6 @@
 "use client"
 
+import { motion } from "motion/react"
 import { Dispatch, SetStateAction } from "react"
 
 interface StepIndicatorProps {
@@ -10,7 +11,12 @@ interface StepIndicatorProps {
 
 export function StepIndicator({ step, onStepChange, clearError }: StepIndicatorProps) {
   return (
-    <div className="mt-6 mb-8 flex w-full items-center justify-center">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+      className="mt-6 mb-8 flex w-full items-center justify-center"
+    >
       {/* Step 1 Button */}
       <button
         className="relative z-10 flex size-10 cursor-pointer items-center justify-center rounded-full ring ring-blue-400"
@@ -36,16 +42,10 @@ export function StepIndicator({ step, onStepChange, clearError }: StepIndicatorP
         className={`relative z-10 flex size-10 items-center justify-center rounded-full ring ${
           step === 1 ? "ring-gray-200" : "ring-pink-400"
         }`}
-        onClick={() => {
-          if (step === 2) {
-            onStepChange(1)
-            clearError()
-          }
-        }}
       >
         <p className={`text-sm ${step === 1 && "text-gray-300"}`}>2</p>
-        <p className="absolute top-11 text-center text-xs">Personal Info</p>
+        <p className={`absolute top-11 text-center text-xs ${step === 1 && "text-gray-400"}`}>Personal Info</p>
       </button>
-    </div>
+    </motion.div>
   )
 }

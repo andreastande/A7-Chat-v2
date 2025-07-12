@@ -1,4 +1,7 @@
+"use client"
+
 import SocialProvider from "@/components/auth/buttons/SocialProvider"
+import { motion } from "motion/react"
 import Link from "next/link"
 import { ReactNode } from "react"
 
@@ -26,18 +29,37 @@ export function AuthPage({
       {/* Left half: Auth */}
       <div className="relative flex w-full items-center justify-center lg:w-1/2">
         <div className="flex w-80 flex-col items-center">
-          <h1 className="text-4xl font-medium">{title}</h1>
-          <p className="mt-4 text-center text-gray-500">{description}</p>
+          <motion.h1
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="text-4xl font-medium"
+          >
+            {title}
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="mt-4 text-center text-gray-500"
+          >
+            {description}
+          </motion.p>
 
           {/* Form */}
           {children}
 
           {/* Divider */}
-          <div className="mt-6 flex w-full items-center gap-4">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.3, ease: "easeOut" }}
+            className="mt-6 flex w-full items-center gap-4"
+          >
             <div className="h-px flex-1 bg-gray-400" />
             <span className="text-sm">or continue with</span>
             <div className="h-px flex-1 bg-gray-400" />
-          </div>
+          </motion.div>
 
           {/* Social buttons */}
           <div className="mt-6 flex gap-4">

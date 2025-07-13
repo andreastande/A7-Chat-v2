@@ -12,7 +12,7 @@ export default function LoginForm() {
   return (
     <AuthForm form={form} onSubmit={onSubmit} clearError={clearError}>
       <EmailField control={form.control} />
-      <PasswordField control={form.control} />
+      <PasswordField control={form.control} showForgotPassword />
 
       {authError && <p className="text-sm text-red-500">{authError}</p>}
 

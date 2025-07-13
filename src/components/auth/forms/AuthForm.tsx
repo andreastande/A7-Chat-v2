@@ -2,16 +2,16 @@
 
 import { Form } from "@/components/ui/form"
 import { ReactNode } from "react"
-import { UseFormReturn } from "react-hook-form"
+import { FieldValues, UseFormReturn } from "react-hook-form"
 
-interface AuthFormProps<T extends Record<string, any>> {
+interface AuthFormProps<T extends FieldValues> {
   form: UseFormReturn<T>
   onSubmit: () => Promise<void>
   clearError: () => void
   children: ReactNode
 }
 
-export function AuthForm<T extends Record<string, any>>({ form, onSubmit, clearError, children }: AuthFormProps<T>) {
+export function AuthForm<T extends FieldValues>({ form, onSubmit, clearError, children }: AuthFormProps<T>) {
   return (
     <Form {...form}>
       <form

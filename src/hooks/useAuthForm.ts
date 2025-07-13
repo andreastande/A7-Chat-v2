@@ -8,11 +8,10 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import z from "zod"
 
-function getEmptyDefaults<T extends Record<string, string>>(schema: z.ZodObject<any>) {
-  const keys = schema.keyof().options as Array<keyof T>
-  const defaults = {} as Record<keyof T, string>
-  for (const key of keys) {
-    defaults[key] = ""
+function getEmptyDefaults<Shape extends z.ZodRawShape>(schema: z.ZodObject<Shape>) {
+  const defaults = {} as { [K in keyof Shape]: string }
+  for (const key in schema.shape) {
+    defaults[key as keyof Shape] = ""
   }
   return defaults
 }
@@ -23,12 +22,11 @@ export function useAuthForm(action: "logIn" | "signUp") {
   const [authError, setAuthError] = useState<string | null>(null)
 
   const schema = action === "logIn" ? loginSchema : signupSchema
-
   type FormValues = z.infer<typeof schema>
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: getEmptyDefaults<FormValues>(schema),
+    defaultValues: getEmptyDefaults(schema),
   })
 
   const onSubmit = form.handleSubmit(async (values) => {
@@ -36,7 +34,7 @@ export function useAuthForm(action: "logIn" | "signUp") {
     setIsLoading(true)
 
     if (action === "logIn") {
-      await authClient.signIn.email(values as any, {
+      await authClient.signIn.email(values, {
         onSuccess: () => router.push("/"),
         onError: (ctx: { error: { message: string } }) => {
           setIsLoading(false)
@@ -44,7 +42,7 @@ export function useAuthForm(action: "logIn" | "signUp") {
         },
       })
     } else {
-      await authClient.signUp.email(values as any, {
+      await authClient.signUp.email(values as z.infer<typeof signupSchema>, {
         onSuccess: () => router.push("/"),
         onError: (ctx: { error: { message: string } }) => {
           setIsLoading(false)

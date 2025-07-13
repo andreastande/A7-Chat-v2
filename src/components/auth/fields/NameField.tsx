@@ -21,7 +21,7 @@ export function NameField<T extends FieldValues>({ control }: NameFieldProps<T>)
             <FormControl>
               <Input placeholder="John Doe" type="text" autoComplete="name" {...field} />
             </FormControl>
-            <FormDescription>Before we continue, we'd love to know your name!</FormDescription>
+            <FormDescription>Before we continue, we&apos;d love to know your name!</FormDescription>
             <FormMessage />
           </FormItem>
         )}

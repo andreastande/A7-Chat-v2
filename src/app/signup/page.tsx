@@ -7,7 +7,7 @@ export default function Page() {
       title="Get Started"
       description={
         <>
-          Welcome to <span className="font-semibold">A7 Chat</span> — Let's create your account.
+          Welcome to <span className="font-semibold">A7 Chat</span> — Let&apos;s create your account.
         </>
       }
       bottomText="Already have an account?"

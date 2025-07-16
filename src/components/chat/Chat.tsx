@@ -1,22 +1,38 @@
 "use client"
 
+import { createChat } from "@/actions/chat"
 import { UIMessage, useChat } from "@ai-sdk/react"
+import { DefaultChatTransport } from "ai"
+import { useState } from "react"
 import Message from "./Message"
 import PositionedChatInput from "./PositionedChatInput"
 
 interface ChatProps {
+  id?: string
   initialMessages?: UIMessage[]
 }
 
-export default function Chat({ initialMessages = [] }: ChatProps) {
+export default function Chat({ id, initialMessages = [] }: ChatProps) {
+  const [chatId] = useState(id ?? crypto.randomUUID())
+
   const { messages, sendMessage } = useChat({
+    id: chatId,
     messages: initialMessages,
+    transport: new DefaultChatTransport({
+      prepareSendMessagesRequest({ messages, id }) {
+        return { body: { message: messages[messages.length - 1], id } }
+      },
+    }),
   })
 
-  const isNewChat = initialMessages.length === 0
+  const isNewChat = !id ? true : false
   const isEmptyChat = messages.length === 0
 
-  const handleSendMessage = (message: string) => {
+  const handleSendMessage = async (message: string) => {
+    if (isNewChat) {
+      window.history.pushState(null, "", `/chat/${chatId}`)
+      await createChat(chatId, message)
+    }
     sendMessage({ text: message })
   }
 

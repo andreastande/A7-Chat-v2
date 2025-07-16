@@ -50,15 +50,21 @@ export default function ChatInput({ onSend }: ChatInputProps) {
       <div className="flex justify-between">
         <div className="flex -translate-x-2 space-x-2">
           <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="ghost" size="sm" className="cursor-pointer font-normal">
-                4.1 Nano
-                <ChevronDown />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent>Content</PopoverContent>
+            <WithTooltip content="Select model" side="bottom">
+              <PopoverTrigger asChild>
+                <Button variant="ghost" size="sm" className="cursor-pointer font-normal">
+                  <span className="sr-only">Select model</span>
+                  4.1 Nano
+                  <ChevronDown />
+                </Button>
+              </PopoverTrigger>
+            </WithTooltip>
+            <PopoverContent side="bottom" align="start">
+              Model picker
+            </PopoverContent>
           </Popover>
-          <WithTooltip content="Add photos & files" side="bottom" delayDuration={700}>
+
+          <WithTooltip content="Add photos & files" side="bottom">
             <Button size="icon" variant="ghost" className="size-8 cursor-pointer">
               <Paperclip />
               <span className="sr-only">Add photos & files</span>
@@ -70,7 +76,7 @@ export default function ChatInput({ onSend }: ChatInputProps) {
           size="icon"
           variant="ghost"
           disabled={!canSendMessage}
-          className="size-8 cursor-pointer bg-blue-400 not-disabled:hover:bg-blue-500 disabled:bg-blue-200"
+          className="size-8 cursor-pointer bg-blue-500 not-disabled:hover:bg-blue-600 disabled:bg-blue-200"
         >
           <Send className="text-primary-foreground" />
           <span className="sr-only">Send prompt</span>

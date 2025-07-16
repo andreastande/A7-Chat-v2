@@ -1,35 +1,44 @@
 "use client"
 
-import { useChat } from "@ai-sdk/react"
-import { useState } from "react"
+import { UIMessage, useChat } from "@ai-sdk/react"
 import Message from "./Message"
+import PositionedChatInput from "./PositionedChatInput"
 
-export default function Chat() {
-  const [input, setInput] = useState("")
-  const { messages, sendMessage } = useChat()
+interface ChatProps {
+  initialMessages?: UIMessage[]
+}
+
+export default function Chat({ initialMessages = [] }: ChatProps) {
+  const { messages, sendMessage } = useChat({
+    messages: initialMessages,
+  })
+
+  const isNewChat = initialMessages.length === 0
+  const isEmptyChat = messages.length === 0
+
+  const handleSendMessage = (message: string) => {
+    sendMessage({ text: message })
+  }
 
   return (
-    <div className="flex justify-center">
-      <div className="flex w-full max-w-3xl flex-col pt-14">
-        {messages.map((message) => (
-          <Message key={message.id} message={message} />
-        ))}
-
-        <form
-          onSubmit={(e) => {
-            e.preventDefault()
-            sendMessage({ text: input })
-            setInput("")
-          }}
-        >
-          <input
-            className="fixed bottom-0 mb-8 w-full max-w-3xl rounded border border-zinc-300 p-2 shadow-xl"
-            value={input}
-            placeholder="Say something..."
-            onChange={(e) => setInput(e.currentTarget.value)}
-          />
-        </form>
-      </div>
-    </div>
+    <>
+      {isEmptyChat ? (
+        <div className="absolute top-1/2 left-1/2 w-full max-w-3xl -translate-x-1/2 -translate-y-[178.5px]">
+          <p className="mx-auto mb-7 w-fit bg-gradient-to-r from-blue-500 to-pink-500 bg-clip-text text-2xl text-transparent">
+            What&apos;s on your mind today?
+          </p>
+          <PositionedChatInput mode="empty" onSend={handleSendMessage} />
+        </div>
+      ) : (
+        <div className="flex justify-center">
+          <div className="flex w-full max-w-3xl flex-col space-y-14 pt-14">
+            {messages.map((message) => (
+              <Message key={message.id} message={message} />
+            ))}
+            <PositionedChatInput mode={isNewChat ? "animate" : "static"} onSend={handleSendMessage} />
+          </div>
+        </div>
+      )}
+    </>
   )
 }

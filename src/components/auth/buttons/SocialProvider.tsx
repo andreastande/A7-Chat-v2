@@ -17,6 +17,7 @@ export default function SocialProvider({ provider, index }: { provider: string; 
           <Image src={`/logos/${provider}.png`} alt={`${provider} logo`} fill />
         </div>
       </div>
+      <span className="sr-only">Sign in with {provider}</span>
     </motion.button>
   )
 }

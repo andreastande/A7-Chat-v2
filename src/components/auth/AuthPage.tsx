@@ -20,7 +20,7 @@ export function AuthPage({
   children,
   bottomText,
   bottomLink,
-  imageSrc = "/images/login-background4.jpg",
+  imageSrc = "/images/login-background.jpg",
 }: AuthPageProps) {
   const socialProviders = ["Google", "Apple", "GitHub"]
 

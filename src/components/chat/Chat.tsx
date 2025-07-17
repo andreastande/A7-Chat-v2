@@ -18,6 +18,7 @@ export default function Chat({ id, initialMessages = [] }: ChatProps) {
   const { messages, sendMessage } = useChat({
     id: chatId,
     messages: initialMessages,
+    experimental_throttle: 50,
     transport: new DefaultChatTransport({
       prepareSendMessagesRequest({ messages, id }) {
         return { body: { message: messages[messages.length - 1], id } }
@@ -29,7 +30,7 @@ export default function Chat({ id, initialMessages = [] }: ChatProps) {
   const isEmptyChat = messages.length === 0
 
   const handleSendMessage = async (message: string) => {
-    if (isNewChat) {
+    if (isNewChat && isEmptyChat) {
       window.history.pushState(null, "", `/chat/${chatId}`)
       await createChat(chatId, message)
     }
@@ -39,7 +40,7 @@ export default function Chat({ id, initialMessages = [] }: ChatProps) {
   return (
     <>
       {isEmptyChat ? (
-        <div className="absolute top-1/2 left-1/2 w-full max-w-3xl -translate-x-1/2 -translate-y-[178.5px]">
+        <div className="absolute top-1/2 left-1/2 w-full max-w-3xl -translate-x-1/2 -translate-y-[174.5px]">
           <p className="mx-auto mb-7 w-fit bg-gradient-to-r from-blue-500 to-pink-500 bg-clip-text text-2xl text-transparent">
             What&apos;s on your mind today?
           </p>
@@ -47,7 +48,7 @@ export default function Chat({ id, initialMessages = [] }: ChatProps) {
         </div>
       ) : (
         <div className="flex justify-center">
-          <div className="flex w-full max-w-3xl flex-col space-y-14 pt-14">
+          <div className="prose flex w-full max-w-3xl flex-col space-y-14 pt-14 pb-40">
             {messages.map((message) => (
               <Message key={message.id} message={message} />
             ))}

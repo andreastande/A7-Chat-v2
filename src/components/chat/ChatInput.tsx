@@ -1,7 +1,8 @@
 "use client"
 
-import { ChevronDown, Paperclip, Send } from "lucide-react"
-import { useState } from "react"
+import { Paperclip, Send } from "lucide-react"
+import Image from "next/image"
+import { useRef, useState } from "react"
 import TextareaAutosize from "react-textarea-autosize"
 import { Button } from "../ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
@@ -13,6 +14,7 @@ interface ChatInputProps {
 
 export default function ChatInput({ onSend }: ChatInputProps) {
   const [input, setInput] = useState("")
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const canSendMessage = input.trim() !== ""
 
@@ -23,21 +25,30 @@ export default function ChatInput({ onSend }: ChatInputProps) {
     }
   }
 
+  const handleFormClick = (e: React.MouseEvent<HTMLFormElement, MouseEvent>) => {
+    const target = e.target as HTMLElement
+    if (textareaRef.current && target !== textareaRef.current && !target.closest("button")) {
+      textareaRef.current.focus()
+    }
+  }
+
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault()
         handleSubmit()
       }}
-      className="w-full rounded-3xl p-4 shadow ring ring-zinc-950/10"
+      onClick={handleFormClick}
+      className="bg-background w-full cursor-text rounded-3xl p-4 shadow ring ring-zinc-950/10"
     >
       <TextareaAutosize
+        ref={textareaRef}
         autoFocus
         value={input}
+        onChange={(e) => setInput(e.currentTarget.value)}
         placeholder="Ask anything"
         minRows={2}
         maxRows={11}
-        onChange={(e) => setInput(e.currentTarget.value)}
         onKeyDown={(e) => {
           if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault()
@@ -48,14 +59,18 @@ export default function ChatInput({ onSend }: ChatInputProps) {
       />
 
       <div className="flex justify-between">
-        <div className="flex -translate-x-2 space-x-2">
+        <div className="flex -translate-x-2 items-center space-x-2">
           <Popover>
             <WithTooltip content="Select model" side="bottom">
               <PopoverTrigger asChild>
-                <Button variant="ghost" size="sm" className="cursor-pointer font-normal">
-                  <span className="sr-only">Select model</span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  aria-label="Select model, current: 4.1 Nano"
+                  className="cursor-pointer font-normal"
+                >
+                  <Image src="/logos/OpenAI.svg" alt="OpenAI Logo" width={16} height={16} />
                   4.1 Nano
-                  <ChevronDown />
                 </Button>
               </PopoverTrigger>
             </WithTooltip>
@@ -63,6 +78,8 @@ export default function ChatInput({ onSend }: ChatInputProps) {
               Model picker
             </PopoverContent>
           </Popover>
+
+          <div className="h-5 w-px bg-zinc-950/10" />
 
           <WithTooltip content="Add photos & files" side="bottom">
             <Button size="icon" variant="ghost" className="size-8 cursor-pointer">

@@ -1,0 +1,22 @@
+"use client"
+
+import { SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
+import { FileText } from "lucide-react"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+
+export default function SidebarFilesItem() {
+  const pathname = usePathname()
+  const isActive = pathname.startsWith("/files")
+
+  return (
+    <SidebarMenuItem>
+      <SidebarMenuButton asChild isActive={isActive}>
+        <Link href="#">
+          <FileText />
+          <span className="ml-2">Files</span>
+        </Link>
+      </SidebarMenuButton>
+    </SidebarMenuItem>
+  )
+}

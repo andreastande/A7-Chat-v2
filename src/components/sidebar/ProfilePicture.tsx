@@ -16,13 +16,13 @@ const getInitials = (name: string) => {
 
 export default function ProfilePicture({ user }: { user: User }) {
   return (
-    <Avatar>
-      <AvatarImage src={user.image ?? ""} />
-      <AvatarFallback className="bg-[url('/images/avatar-background.jpg')] bg-cover">
-        <span className="font-semibold text-white drop-shadow-lg group-data-[state=expanded]:hidden">
-          {getInitials(user.name)}
-        </span>
-      </AvatarFallback>
-    </Avatar>
+    <button className="size-8 cursor-pointer rounded-full shadow-md">
+      <Avatar className="transition-all hover:brightness-90">
+        {user.image && <AvatarImage src={user.image} />}
+        <AvatarFallback className="bg-[url('/images/avatar-background.jpg')] bg-cover">
+          <span className="text-sm font-semibold text-white drop-shadow-lg">{getInitials(user.name)}</span>
+        </AvatarFallback>
+      </Avatar>
+    </button>
   )
 }

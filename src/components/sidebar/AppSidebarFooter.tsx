@@ -1,7 +1,7 @@
 import { verifySession } from "@/lib/dal"
+import Image from "next/image"
 import Link from "next/link"
-import { SidebarFooter, SidebarMenuButton } from "../ui/sidebar"
-import LogInGradientIcon from "./LogInGradientIcon"
+import { SidebarFooter, SidebarMenu, SidebarMenuButton } from "../ui/sidebar"
 import ProfilePicture, { User } from "./ProfilePicture"
 
 export default async function AppSidebarFooter() {
@@ -9,19 +9,20 @@ export default async function AppSidebarFooter() {
 
   return (
     <SidebarFooter className="flex h-16 items-center space-x-2">
-      <SidebarMenuButton size="lg" className="cursor-pointer" asChild={user ? false : true}>
+      <SidebarMenu>
         {user ? (
-          <>
-            <ProfilePicture user={user as User} />
-            <p className="whitespace-nowrap">{user.name}</p>
-          </>
+          <ProfilePicture user={user as User} />
         ) : (
-          <Link href="/login" className="flex items-center gap-2">
-            <LogInGradientIcon />
-            <p className="whitespace-nowrap">Log in</p>
-          </Link>
+          <SidebarMenuButton asChild>
+            <Link href="/login">
+              <div className="relative size-5 shrink-0">
+                <Image src="/icons/LogInGradient.png" alt="Log in" fill />
+              </div>
+              <span>Sign in</span>
+            </Link>
+          </SidebarMenuButton>
         )}
-      </SidebarMenuButton>
+      </SidebarMenu>
     </SidebarFooter>
   )
 }

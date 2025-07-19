@@ -1,11 +1,12 @@
-import { Sidebar, SidebarContent, SidebarHeader } from "../ui/sidebar"
+import { Sidebar, SidebarHeader } from "../ui/sidebar"
+import AppSidebarContent from "./AppSidebarContent"
 import AppSidebarFooter from "./AppSidebarFooter"
 
 export default function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
       <SidebarHeader />
-      <SidebarContent />
+      <AppSidebarContent />
       <AppSidebarFooter />
     </Sidebar>
   )

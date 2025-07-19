@@ -1,6 +1,8 @@
 "use client"
 
-import { Paperclip, Send } from "lucide-react"
+import { UseChatHelpers } from "@ai-sdk/react"
+import { UIMessage } from "ai"
+import { Paperclip, Send, Square } from "lucide-react"
 import Image from "next/image"
 import { useRef, useState } from "react"
 import TextareaAutosize from "react-textarea-autosize"
@@ -9,19 +11,24 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 import WithTooltip from "../WithTooltip"
 
 interface ChatInputProps {
+  status: UseChatHelpers<UIMessage>["status"]
+  stop: UseChatHelpers<UIMessage>["stop"]
   onSend: (msg: string) => void
 }
 
-export default function ChatInput({ onSend }: ChatInputProps) {
+export default function ChatInput({ status, stop, onSend }: ChatInputProps) {
   const [input, setInput] = useState("")
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  const canSendMessage = input.trim() !== ""
+  const canStop = status === "streaming" || status === "submitted"
+  const canSend = !canStop && input.trim() !== ""
 
   const handleSubmit = () => {
-    if (canSendMessage) {
+    if (canSend) {
       onSend(input.trim())
       setInput("")
+    } else if (canStop) {
+      stop()
     }
   }
 
@@ -92,11 +99,11 @@ export default function ChatInput({ onSend }: ChatInputProps) {
         <Button
           size="icon"
           variant="ghost"
-          disabled={!canSendMessage}
+          disabled={!canSend && !canStop}
           className="size-8 cursor-pointer bg-blue-500 not-disabled:hover:bg-blue-600 disabled:bg-blue-200"
         >
-          <Send className="text-primary-foreground" />
-          <span className="sr-only">Send prompt</span>
+          {canStop ? <Square className="text-primary-foreground" /> : <Send className="text-primary-foreground" />}
+          <span className="sr-only">{canStop ? "Stop message stream" : "Send prompt"}</span>
         </Button>
       </div>
     </form>

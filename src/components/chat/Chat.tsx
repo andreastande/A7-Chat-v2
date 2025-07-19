@@ -1,6 +1,6 @@
 "use client"
 
-import { createChat } from "@/actions/chat"
+import { createChat, generateAndUpdateTitle } from "@/actions/chat"
 import { UIMessage, useChat } from "@ai-sdk/react"
 import { DefaultChatTransport } from "ai"
 import { useState } from "react"
@@ -15,7 +15,7 @@ interface ChatProps {
 export default function Chat({ id, initialMessages = [] }: ChatProps) {
   const [chatId] = useState(id ?? crypto.randomUUID())
 
-  const { messages, sendMessage } = useChat({
+  const { status, messages, sendMessage, stop } = useChat({
     id: chatId,
     messages: initialMessages,
     experimental_throttle: 50,
@@ -32,7 +32,8 @@ export default function Chat({ id, initialMessages = [] }: ChatProps) {
   const handleSendMessage = async (message: string) => {
     if (isNewChat && isEmptyChat) {
       window.history.pushState(null, "", `/chat/${chatId}`)
-      await createChat(chatId, message)
+      await createChat(chatId)
+      void generateAndUpdateTitle(chatId, message)
     }
     sendMessage({ text: message })
   }
@@ -44,7 +45,7 @@ export default function Chat({ id, initialMessages = [] }: ChatProps) {
           <p className="mx-auto mb-7 w-fit bg-gradient-to-r from-blue-500 to-pink-500 bg-clip-text text-2xl text-transparent">
             What&apos;s on your mind today?
           </p>
-          <PositionedChatInput mode="empty" onSend={handleSendMessage} />
+          <PositionedChatInput mode="empty" status={status} stop={stop} onSend={handleSendMessage} />
         </div>
       ) : (
         <div className="flex justify-center">
@@ -52,7 +53,12 @@ export default function Chat({ id, initialMessages = [] }: ChatProps) {
             {messages.map((message) => (
               <Message key={message.id} message={message} />
             ))}
-            <PositionedChatInput mode={isNewChat ? "animate" : "static"} onSend={handleSendMessage} />
+            <PositionedChatInput
+              mode={isNewChat ? "animate" : "static"}
+              status={status}
+              stop={stop}
+              onSend={handleSendMessage}
+            />
           </div>
         </div>
       )}

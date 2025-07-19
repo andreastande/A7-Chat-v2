@@ -38,7 +38,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
     <>
       <AppSidebar variant="inset" collapsible="icon" />
       <SidebarInset>
-        <SidebarTrigger className="sticky top-3 mt-3 ml-3 cursor-pointer" />
+        <SidebarTrigger className="sticky top-3 mt-3 ml-3 cursor-pointer md:hidden" />
         {/* <ThemeToggle className="sticky top-3 mt-3 mr-3 cursor-pointer" /> */}
 
         <Chat id={id} initialMessages={initialMessages} />

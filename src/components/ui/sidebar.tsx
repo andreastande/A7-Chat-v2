@@ -146,7 +146,7 @@ function Sidebar({
   variant?: "sidebar" | "floating" | "inset"
   collapsible?: "offcanvas" | "icon" | "none"
 }) {
-  const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
+  const { isMobile, state, openMobile, setOpenMobile, toggleSidebar } = useSidebar()
 
   if (collapsible === "none") {
     return (
@@ -187,12 +187,13 @@ function Sidebar({
 
   return (
     <div
-      className="group peer text-sidebar-foreground hidden md:block"
+      className="group peer text-sidebar-foreground hidden cursor-e-resize data-[state=expanded]:hover:cursor-w-resize md:block"
       data-state={state}
       data-collapsible={state === "collapsed" ? collapsible : ""}
       data-variant={variant}
       data-side={side}
       data-slot="sidebar"
+      onClick={(e) => !(e.target as HTMLElement).closest("button, a, [data-slot='sidebar-menu']") && toggleSidebar()}
     >
       {/* This is what handles the sidebar gap on desktop */}
       <div

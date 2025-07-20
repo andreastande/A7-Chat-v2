@@ -1,5 +1,6 @@
 "use client"
 
+import { useAutoFocusOnTyping } from "@/hooks/useAutoFocusOnTyping"
 import { UseChatHelpers } from "@ai-sdk/react"
 import { UIMessage } from "ai"
 import { Paperclip, Send, Square } from "lucide-react"
@@ -19,6 +20,10 @@ interface ChatInputProps {
 export default function ChatInput({ status, stop, onSend }: ChatInputProps) {
   const [input, setInput] = useState("")
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  useAutoFocusOnTyping(textareaRef, (char) => {
+    setInput((prev) => prev + char)
+  })
 
   const canStop = status === "streaming" || status === "submitted"
   const canSend = !canStop && input.trim() !== ""

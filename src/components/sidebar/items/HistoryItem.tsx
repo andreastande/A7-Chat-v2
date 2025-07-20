@@ -68,6 +68,7 @@ export default function HistoryItem({ defaultOpen = true, chats }: { defaultOpen
           <HoverCardTrigger>
             <SidebarMenuButton className="cursor-pointer">
               <History />
+              <span className="sr-only">Chat history</span>
             </SidebarMenuButton>
           </HoverCardTrigger>
 

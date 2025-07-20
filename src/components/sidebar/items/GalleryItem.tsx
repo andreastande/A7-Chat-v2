@@ -1,20 +1,21 @@
 "use client"
 
 import { SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
-import { FileText } from "lucide-react"
+import { Image } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
-export default function SidebarFilesItem() {
+export default function GalleryItem() {
   const pathname = usePathname()
-  const isActive = pathname.startsWith("/files")
+  const isActive = pathname.startsWith("/gallery")
 
   return (
     <SidebarMenuItem>
       <SidebarMenuButton asChild isActive={isActive}>
         <Link href="#">
-          <FileText />
-          <span className="ml-2">Files</span>
+          {/* eslint-disable-next-line jsx-a11y/alt-text */}
+          <Image />
+          <span className="ml-2">Gallery</span>
         </Link>
       </SidebarMenuButton>
     </SidebarMenuItem>

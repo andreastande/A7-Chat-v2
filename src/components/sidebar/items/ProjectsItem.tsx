@@ -5,7 +5,7 @@ import { Folder } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
-export default function SidebarProjectsItem() {
+export default function ProjectsItem() {
   const pathname = usePathname()
   const isActive = pathname.startsWith("/project")
 

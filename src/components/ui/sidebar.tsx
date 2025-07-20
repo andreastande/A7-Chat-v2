@@ -193,7 +193,9 @@ function Sidebar({
       data-variant={variant}
       data-side={side}
       data-slot="sidebar"
-      onClick={(e) => !(e.target as HTMLElement).closest("button, a, [data-slot='sidebar-menu']") && toggleSidebar()}
+      onClick={(e) =>
+        !(e.target as HTMLElement).closest("button, a, [data-slot='sidebar-content-wrapper']") && toggleSidebar()
+      }
     >
       {/* This is what handles the sidebar gap on desktop */}
       <div

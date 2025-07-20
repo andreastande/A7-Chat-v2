@@ -14,6 +14,7 @@ import { createSelectSchema } from "drizzle-zod"
 import { ChevronDown, History } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { useState } from "react"
 import z from "zod"
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -24,17 +25,19 @@ export default function HistoryItem({ defaultOpen = true, chats }: { defaultOpen
   const { state } = useSidebar()
   const pathname = usePathname()
 
-  const chatId = pathname.startsWith("/chat/") ? pathname.split("/chat/")[1] : undefined
+  const [collapsibleOpen, setCollapsibleOpen] = useState(defaultOpen)
 
+  const chatId = pathname.startsWith("/chat/") ? pathname.split("/chat/")[1] : undefined
   const tenMostRecentChats = chats.slice(0, 10)
 
   return (
     <>
       {state === "expanded" ? (
         <Collapsible
-          defaultOpen={defaultOpen}
+          open={collapsibleOpen}
           onOpenChange={(open) => {
             document.cookie = `${"sidebar_history_collapsible_state"}=${open}; path=/; max-age=${60 * 60 * 24 * 7}`
+            setCollapsibleOpen(open)
           }}
           className="group/collapsible"
         >

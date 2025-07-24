@@ -1,6 +1,6 @@
 import Chat from "@/components/chat/Chat"
 import AppSidebar from "@/components/sidebar/AppSidebar"
-import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
+import { SidebarTrigger } from "@/components/ui/sidebar"
 import { db } from "@/db"
 import { chat, message } from "@/db/schema"
 import { verifySession } from "@/lib/dal"
@@ -36,13 +36,13 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 
   return (
     <>
-      <AppSidebar variant="inset" collapsible="icon" />
-      <SidebarInset>
+      <AppSidebar collapsible="icon" />
+      <main className="bg-sidebar relative w-full">
         <SidebarTrigger className="sticky top-3 mt-3 ml-3 cursor-pointer md:hidden" />
         {/* <ThemeToggle className="sticky top-3 mt-3 mr-3 cursor-pointer" /> */}
 
         <Chat id={id} initialMessages={initialMessages} />
-      </SidebarInset>
+      </main>
     </>
   )
 }

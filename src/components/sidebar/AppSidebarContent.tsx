@@ -1,8 +1,5 @@
-import { db } from "@/db"
-import { chat } from "@/db/schema"
+import { getChats } from "@/actions/chat"
 import { verifySession } from "@/lib/dal"
-import { and, desc, eq } from "drizzle-orm"
-import { cookies } from "next/headers"
 import { SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu } from "../ui/sidebar"
 import ChatItem from "./items/ChatItem"
 import FilesItem from "./items/FilesItem"
@@ -11,17 +8,8 @@ import HistoryItem from "./items/HistoryItem"
 import ProjectsItem from "./items/ProjectsItem"
 
 export default async function AppSidebarContent() {
-  const { user } = await verifySession()
-
-  const cookieStore = await cookies()
-  const cookie = cookieStore.get("sidebar_history_collapsible_state")
-  const defaultOpen = cookie ? cookie.value === "true" : true
-
-  const chats = await db
-    .select()
-    .from(chat)
-    .where(and(eq(chat.userId, user?.id ?? "")))
-    .orderBy(desc(chat.updatedAt))
+  const chats = await getChats()
+  const { isAuth } = await verifySession()
 
   return (
     <SidebarContent>
@@ -30,9 +18,9 @@ export default async function AppSidebarContent() {
           <SidebarGroupContent>
             <SidebarMenu>
               <ChatItem />
-              <ProjectsItem />
-              <GalleryItem />
-              <FilesItem />
+              <ProjectsItem isAuth={isAuth} />
+              <GalleryItem isAuth={isAuth} />
+              <FilesItem isAuth={isAuth} />
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -40,7 +28,7 @@ export default async function AppSidebarContent() {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              <HistoryItem defaultOpen={defaultOpen} chats={chats} />
+              <HistoryItem isAuth={isAuth} chats={chats} />
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

@@ -1,9 +1,9 @@
 "use client"
 
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import {
   SidebarMenuButton,
+  SidebarMenuItem,
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
@@ -11,72 +11,80 @@ import {
 } from "@/components/ui/sidebar"
 import { chat } from "@/db/schema"
 import { createSelectSchema } from "drizzle-zod"
-import { ChevronDown, History } from "lucide-react"
+import { History } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
 import z from "zod"
+import HistoryCommandDialog from "../HistoryCommandDialog"
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const chatSchema = createSelectSchema(chat)
 export type Chat = z.infer<typeof chatSchema>
 
-export default function HistoryItem({ defaultOpen = true, chats }: { defaultOpen?: boolean; chats: Chat[] }) {
+export default function HistoryItem({ isAuth, chats }: { isAuth: boolean; chats: Chat[] }) {
   const { state } = useSidebar()
   const pathname = usePathname()
-
-  const [collapsibleOpen, setCollapsibleOpen] = useState(defaultOpen)
+  const [commandDialogOpen, setCommandDialogOpen] = useState(false)
 
   const chatId = pathname.startsWith("/chat/") ? pathname.split("/chat/")[1] : undefined
   const tenMostRecentChats = chats.slice(0, 10)
 
   return (
-    <>
-      {state === "expanded" ? (
-        <Collapsible
-          open={collapsibleOpen}
-          onOpenChange={(open) => {
-            document.cookie = `${"sidebar_history_collapsible_state"}=${open}; path=/; max-age=${60 * 60 * 24 * 7}`
-            setCollapsibleOpen(open)
-          }}
-          className="group/collapsible"
-        >
-          <CollapsibleTrigger asChild>
-            <SidebarMenuButton className="group/sidebar-menu-button cursor-pointer">
+    <SidebarMenuItem>
+      {isAuth ? (
+        <>
+          {state === "expanded" ? (
+            <>
+              <SidebarMenuButton className="cursor-pointer" onClick={() => setCommandDialogOpen(true)}>
+                <History />
+                <span className="ml-2">History</span>
+              </SidebarMenuButton>
+
+              {tenMostRecentChats.length > 0 && (
+                <SidebarMenuSub className="py-1">
+                  {tenMostRecentChats.map((chat) => (
+                    <SidebarMenuSubItem key={chat.id}>
+                      <SidebarMenuSubButton asChild isActive={chat.id === chatId}>
+                        <Link href={`/chat/${chat.id}`}>
+                          <span className="whitespace-nowrap">{chat.title}</span>
+                        </Link>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                  ))}
+                </SidebarMenuSub>
+              )}
+            </>
+          ) : (
+            <HoverCard openDelay={300} closeDelay={300}>
+              <HoverCardTrigger>
+                <SidebarMenuButton className="cursor-pointer" onClick={() => setCommandDialogOpen(true)}>
+                  <History />
+                  <span className="sr-only">Chat history</span>
+                </SidebarMenuButton>
+              </HoverCardTrigger>
+
+              <HoverCardContent side="right" align="start">
+                To be worked on :D
+              </HoverCardContent>
+            </HoverCard>
+          )}
+          <HistoryCommandDialog open={commandDialogOpen} setOpen={setCommandDialogOpen} />
+        </>
+      ) : (
+        <HoverCard openDelay={300} closeDelay={300}>
+          <HoverCardTrigger>
+            <SidebarMenuButton disabled>
               <History />
               <span className="ml-2">History</span>
-              <ChevronDown className="ml-auto hidden transition-transform group-hover/sidebar-menu-button:block group-data-[state=open]/collapsible:rotate-180" />
-            </SidebarMenuButton>
-          </CollapsibleTrigger>
-
-          <CollapsibleContent className="data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down overflow-hidden transition-all">
-            <SidebarMenuSub>
-              {tenMostRecentChats.map((chat) => (
-                <SidebarMenuSubItem key={chat.id}>
-                  <SidebarMenuSubButton asChild isActive={chat.id === chatId}>
-                    <Link href={`/chat/${chat.id}`}>
-                      <span className="whitespace-nowrap">{chat.title}</span>
-                    </Link>
-                  </SidebarMenuSubButton>
-                </SidebarMenuSubItem>
-              ))}
-            </SidebarMenuSub>
-          </CollapsibleContent>
-        </Collapsible>
-      ) : (
-        <HoverCard openDelay={150} closeDelay={150}>
-          <HoverCardTrigger>
-            <SidebarMenuButton className="cursor-pointer">
-              <History />
-              <span className="sr-only">Chat history</span>
             </SidebarMenuButton>
           </HoverCardTrigger>
 
           <HoverCardContent side="right" align="start">
-            To be worked on :D
+            Test
           </HoverCardContent>
         </HoverCard>
       )}
-    </>
+    </SidebarMenuItem>
   )
 }

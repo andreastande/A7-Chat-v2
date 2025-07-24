@@ -38,9 +38,8 @@ export default function ChatInput({ status, stop, onSend }: ChatInputProps) {
   }
 
   const handleFormClick = (e: React.MouseEvent<HTMLFormElement, MouseEvent>) => {
-    const target = e.target as HTMLElement
-    if (textareaRef.current && target !== textareaRef.current && !target.closest("button")) {
-      textareaRef.current.focus()
+    if (!(e.target as HTMLElement).closest("button")) {
+      textareaRef.current!.focus()
     }
   }
 

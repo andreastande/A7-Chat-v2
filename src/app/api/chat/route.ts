@@ -1,8 +1,8 @@
+import { getMessages } from "@/actions/message"
 import { db } from "@/db"
 import { message as messageTable } from "@/db/schema"
 import { openai } from "@ai-sdk/openai"
 import { convertToModelMessages, streamText, UIMessage } from "ai"
-import { eq } from "drizzle-orm"
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30
@@ -10,12 +10,7 @@ export const maxDuration = 30
 export async function POST(req: Request) {
   const { message, id }: { message: UIMessage; id: string } = await req.json()
 
-  const dbMessages = await db
-    .select({
-      uiMessage: messageTable.uiMessage,
-    })
-    .from(messageTable)
-    .where(eq(messageTable.chatId, id))
+  const dbMessages = await getMessages(id)
 
   const previousMessages = dbMessages.map(({ uiMessage }) => uiMessage as UIMessage)
   const messages = [...previousMessages, message]
@@ -30,6 +25,7 @@ export async function POST(req: Request) {
     onFinish: async ({ messages }) => {
       const [userMessage, assistantMessage] = messages.slice(-2)
 
+      // TODO: Save userMessage before AI response is streamed
       await db.insert(messageTable).values([
         {
           id: userMessage.id,

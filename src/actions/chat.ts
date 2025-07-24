@@ -2,24 +2,42 @@
 
 import { db } from "@/db"
 import { chat } from "@/db/schema"
-import { verifySession } from "@/lib/dal"
+import { requireSession, verifySession } from "@/lib/dal"
 import { openai } from "@ai-sdk/openai"
 import { generateText } from "ai"
-import { and, eq } from "drizzle-orm"
+import { and, desc, eq } from "drizzle-orm"
+
+export async function getChats() {
+  const { isAuth, userId } = await verifySession()
+
+  if (!isAuth) return []
+
+  return db.select().from(chat).where(eq(chat.userId, userId)).orderBy(desc(chat.updatedAt))
+}
+
+export async function getChat(id: string) {
+  const { userId } = await requireSession()
+
+  return db
+    .select()
+    .from(chat)
+    .where(and(eq(chat.id, id), eq(chat.userId, userId)))
+    .limit(1)
+}
 
 export async function createChat(id: string) {
-  const { user } = await verifySession()
+  const { userId } = await requireSession()
 
   await db.insert(chat).values({
     id,
     model: "gpt-4.1-nano",
     title: "New chat",
-    userId: user?.id ?? "", // TODO: Fix
+    userId,
   })
 }
 
 export async function generateAndUpdateTitle(id: string, message: string) {
-  const { user } = await verifySession()
+  const { userId } = await requireSession()
 
   const { text: title } = await generateText({
     model: openai("gpt-4.1-nano"),
@@ -35,5 +53,5 @@ export async function generateAndUpdateTitle(id: string, message: string) {
     .set({
       title,
     })
-    .where(and(eq(chat.id, id), eq(chat.userId, user?.id ?? ""))) // TODO: Fix
+    .where(and(eq(chat.id, id), eq(chat.userId, userId)))
 }

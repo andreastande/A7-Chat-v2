@@ -185,6 +185,15 @@ function Sidebar({
     )
   }
 
+  const IGNORE_TOGGLE_SELECTORS = [
+    "button",
+    "a",
+    "[data-slot='sidebar-content-wrapper']",
+    "[data-slot='dialog-overlay']",
+    "[data-slot='hover-card-content']",
+    "[data-slot='command']",
+  ].join(", ")
+
   return (
     <div
       className="group peer text-sidebar-foreground hidden cursor-e-resize data-[state=expanded]:hover:cursor-w-resize md:block"
@@ -193,9 +202,9 @@ function Sidebar({
       data-variant={variant}
       data-side={side}
       data-slot="sidebar"
-      onClick={(e) =>
-        !(e.target as HTMLElement).closest("button, a, [data-slot='sidebar-content-wrapper']") && toggleSidebar()
-      }
+      onClick={(e) => {
+        !(e.target as HTMLElement).closest(IGNORE_TOGGLE_SELECTORS) && toggleSidebar()
+      }}
     >
       {/* This is what handles the sidebar gap on desktop */}
       <div

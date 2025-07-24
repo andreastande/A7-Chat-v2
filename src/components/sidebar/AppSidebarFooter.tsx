@@ -5,12 +5,12 @@ import { SidebarFooter, SidebarMenu, SidebarMenuButton } from "../ui/sidebar"
 import ProfilePicture, { User } from "./ProfilePicture"
 
 export default async function AppSidebarFooter() {
-  const { user } = await verifySession()
+  const { isAuth, user } = await verifySession()
 
   return (
     <SidebarFooter className="flex h-16 items-center space-x-2">
       <SidebarMenu>
-        {user ? (
+        {isAuth ? (
           <ProfilePicture user={user as User} />
         ) : (
           <SidebarMenuButton asChild>

@@ -12,8 +12,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 import WithTooltip from "../WithTooltip"
 
 interface ChatInputProps {
-  status: UseChatHelpers<UIMessage>["status"]
-  stop: UseChatHelpers<UIMessage>["stop"]
+  status?: UseChatHelpers<UIMessage>["status"]
+  stop?: UseChatHelpers<UIMessage>["stop"]
   onSend: (msg: string) => void
 }
 
@@ -33,7 +33,7 @@ export default function ChatInput({ status, stop, onSend }: ChatInputProps) {
       onSend(input.trim())
       setInput("")
     } else if (canStop) {
-      stop()
+      stop?.()
     }
   }
 

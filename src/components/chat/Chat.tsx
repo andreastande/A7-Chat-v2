@@ -27,7 +27,6 @@ export default function Chat({ id, initialMessages = [] }: ChatProps) {
   useEffect(() => {
     if (initialMessages.length === 1 && !didRegenerateRef.current) {
       didRegenerateRef.current = true
-      console.log("regenerated")
       regenerate()
     }
   }, [initialMessages.length, regenerate])
@@ -35,10 +34,6 @@ export default function Chat({ id, initialMessages = [] }: ChatProps) {
   const handleSendMessage = async (msg: string) => {
     sendMessage({ text: msg })
   }
-
-  useEffect(() => {
-    console.log(messages)
-  }, [messages])
 
   return (
     <>

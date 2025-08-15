@@ -2,7 +2,7 @@ import "server-only"
 
 import { openai } from "@ai-sdk/openai"
 import { generateText, UIMessage } from "ai"
-import { and, eq } from "drizzle-orm"
+import { and, desc, eq } from "drizzle-orm"
 import { db } from "."
 import { chat, message } from "./schema"
 
@@ -14,6 +14,10 @@ export async function getChat(userId: string, chatId: string) {
     .limit(1)
 
   return row
+}
+
+export async function getChats(userId: string) {
+  return await db.select().from(chat).where(eq(chat.userId, userId)).orderBy(desc(chat.updatedAt))
 }
 
 export async function getUIMessagesInChat(userId: string, chatId: string) {

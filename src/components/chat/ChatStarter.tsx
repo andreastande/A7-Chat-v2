@@ -12,9 +12,6 @@ export default function ChatStarter() {
   async function handleSendMessage(msg: string) {
     const chatId = crypto.randomUUID()
 
-    await createChat(chatId)
-    void generateAndUpdateTitle(chatId, msg)
-
     const toUIMessage = {
       id: generateId(),
       metadata: undefined,
@@ -22,7 +19,9 @@ export default function ChatStarter() {
       parts: [{ type: "text", text: msg }] as Array<UIMessagePart<UIDataTypes, UITools>>,
     } satisfies UIMessage
 
+    await createChat(chatId)
     await insertUIMessagesInChat(chatId, [toUIMessage])
+    void generateAndUpdateTitle(chatId, msg)
 
     router.push(`/chat/${chatId}`)
   }

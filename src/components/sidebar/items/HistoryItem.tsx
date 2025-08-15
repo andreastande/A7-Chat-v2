@@ -19,7 +19,7 @@ import z from "zod"
 const chatSchema = createSelectSchema(chat)
 export type Chat = z.infer<typeof chatSchema>
 
-export default function HistoryItem({ defaultOpen = true, chats }: { defaultOpen?: boolean; chats: Chat[] }) {
+export default function HistoryItem({ chats }: { chats: Chat[] }) {
   const { state } = useSidebar()
   const pathname = usePathname()
 

@@ -31,7 +31,7 @@ export default function Chat({ id, initialMessages = [] }: ChatProps) {
     }
   }, [initialMessages.length, regenerate])
 
-  const handleSendMessage = async (msg: string) => {
+  const handleSendMessage = (msg: string) => {
     sendMessage({ text: msg })
   }
 

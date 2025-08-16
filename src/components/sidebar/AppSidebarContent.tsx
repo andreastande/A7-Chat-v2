@@ -19,7 +19,6 @@ export default async function AppSidebarContent() {
           <SidebarGroupContent>
             <SidebarMenu>
               <ChatItem />
-              <ProjectsItem />
               <GalleryItem />
               <FilesItem />
             </SidebarMenu>
@@ -29,6 +28,7 @@ export default async function AppSidebarContent() {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
+              <ProjectsItem />
               <HistoryItem chats={chats} />
             </SidebarMenu>
           </SidebarGroupContent>

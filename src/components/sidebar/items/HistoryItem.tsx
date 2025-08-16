@@ -39,7 +39,7 @@ export default function HistoryItem({ chats }: { chats: Chat[] }) {
               <span className="ml-2">History</span>
             </SidebarMenuButton>
 
-            {tenMostRecentChats.length && (
+            {tenMostRecentChats.length > 0 && (
               <CollapsibleTrigger asChild>
                 <SidebarMenuAction className="bg-sidebar-accent text-sidebar-accent-foreground left-1.5 hidden group-hover/sidebar-menu-btn:flex">
                   <ChevronRight className="transition-transform group-data-[state=open]/collapsible:rotate-90" />
@@ -48,7 +48,7 @@ export default function HistoryItem({ chats }: { chats: Chat[] }) {
             )}
           </div>
 
-          {tenMostRecentChats.length && (
+          {tenMostRecentChats.length > 0 && (
             <CollapsibleContent className="data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down overflow-hidden transition-all">
               <SidebarMenuSub>
                 {tenMostRecentChats.map((chat) => (

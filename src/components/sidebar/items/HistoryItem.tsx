@@ -60,6 +60,9 @@ export default function HistoryItem({ chats }: { chats: Chat[] }) {
                     </SidebarMenuSubButton>
                   </SidebarMenuSubItem>
                 ))}
+                <SidebarMenuSubItem>
+                  <SidebarMenuSubButton className="cursor-pointer hover:bg-transparent">See all</SidebarMenuSubButton>
+                </SidebarMenuSubItem>
               </SidebarMenuSub>
             </CollapsibleContent>
           )}

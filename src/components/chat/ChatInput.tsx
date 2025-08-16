@@ -62,7 +62,7 @@ export default function ChatInput({ status, stop, onSend }: ChatInputProps) {
         minRows={2}
         maxRows={11}
         onKeyDown={(e) => {
-          if (e.key === "Enter" && !e.shiftKey) {
+          if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
             e.preventDefault()
             handleSubmit()
           }

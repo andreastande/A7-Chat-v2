@@ -2,7 +2,7 @@ import { RefObject, useEffect } from "react"
 
 function isPrintableKey(e: KeyboardEvent) {
   // single‐character keys only, no modifiers
-  return e.key.length === 1 && !e.metaKey && !e.ctrlKey && !e.altKey && !e.shiftKey
+  return e.key.length === 1 && !e.metaKey && !e.ctrlKey && !e.altKey
 }
 
 export function useAutoFocusOnTyping(

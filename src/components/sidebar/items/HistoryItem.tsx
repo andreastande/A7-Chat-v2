@@ -36,7 +36,7 @@ export default function HistoryItem({ chats }: { chats: Chat[] }) {
           <div className="group/sidebar-menu-btn">
             <SidebarMenuButton className="cursor-pointer">
               <History />
-              <span className="ml-2">History</span>
+              <span className="ml-2 font-medium">History</span>
             </SidebarMenuButton>
 
             {tenMostRecentChats.length > 0 && (
@@ -61,7 +61,9 @@ export default function HistoryItem({ chats }: { chats: Chat[] }) {
                   </SidebarMenuSubItem>
                 ))}
                 <SidebarMenuSubItem>
-                  <SidebarMenuSubButton className="cursor-pointer hover:bg-transparent">See all</SidebarMenuSubButton>
+                  <SidebarMenuSubButton className="cursor-pointer text-xs font-semibold whitespace-nowrap text-gray-600 hover:bg-transparent active:bg-transparent">
+                    See all
+                  </SidebarMenuSubButton>
                 </SidebarMenuSubItem>
               </SidebarMenuSub>
             </CollapsibleContent>

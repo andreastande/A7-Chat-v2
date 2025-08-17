@@ -15,7 +15,7 @@ export default function GalleryItem() {
         <Link href="#">
           {/* eslint-disable-next-line jsx-a11y/alt-text */}
           <Image />
-          <span className="ml-2">Gallery</span>
+          <span className="ml-2 font-medium">Gallery</span>
         </Link>
       </SidebarMenuButton>
     </SidebarMenuItem>

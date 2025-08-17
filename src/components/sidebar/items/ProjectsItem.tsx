@@ -26,7 +26,7 @@ export default function ProjectsItem() {
           <div className="group/sidebar-menu-btn">
             <SidebarMenuButton isActive={isActive} className="cursor-pointer">
               <Folder />
-              <span className="ml-2">Projects</span>
+              <span className="ml-2 font-medium">Projects</span>
             </SidebarMenuButton>
 
             {projects.length > 0 && (

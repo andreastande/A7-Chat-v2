@@ -14,7 +14,7 @@ export default function ChatItem() {
       <SidebarMenuButton asChild isActive={isActive}>
         <Link href="/">
           <SquarePen />
-          <span className="ml-2">Chat</span>
+          <span className="ml-2 font-medium">Chat</span>
         </Link>
       </SidebarMenuButton>
     </SidebarMenuItem>

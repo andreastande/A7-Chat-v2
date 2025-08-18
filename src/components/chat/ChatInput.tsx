@@ -3,7 +3,7 @@
 import { useAutoFocusOnTyping } from "@/hooks/useAutoFocusOnTyping"
 import { UseChatHelpers } from "@ai-sdk/react"
 import { UIMessage } from "ai"
-import { Paperclip, Send, Square } from "lucide-react"
+import { Plus, Send, Square } from "lucide-react"
 import Image from "next/image"
 import { useRef, useState } from "react"
 import TextareaAutosize from "react-textarea-autosize"
@@ -93,10 +93,10 @@ export default function ChatInput({ status, stop, onSend }: ChatInputProps) {
 
           <div className="h-5 w-px bg-zinc-950/10" />
 
-          <WithTooltip content="Add photos & files" side="bottom">
+          <WithTooltip content="Add files and more" side="bottom">
             <Button size="icon" variant="ghost" className="size-8 cursor-pointer">
-              <Paperclip />
-              <span className="sr-only">Add photos & files</span>
+              <Plus />
+              <span className="sr-only">Add files and more</span>
             </Button>
           </WithTooltip>
         </div>

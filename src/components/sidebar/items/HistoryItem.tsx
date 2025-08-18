@@ -77,7 +77,7 @@ export default function HistoryItem({ chats }: { chats: Chat[] }) {
                           </SidebarMenuSubAction>
                         </DropdownMenuTrigger>
 
-                        <DropdownMenuContent side="right" align="start">
+                        <DropdownMenuContent side="right" align="start" onCloseAutoFocus={(e) => e.preventDefault()}>
                           <DropdownMenuItem>Rename</DropdownMenuItem>
                         </DropdownMenuContent>
                       </SidebarMenuSubItem>

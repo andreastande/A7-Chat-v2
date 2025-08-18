@@ -30,9 +30,9 @@ export default function HistoryItem({ chats }: { chats: Chat[] }) {
   const tenMostRecentChats = chats.slice(0, 10)
 
   return (
-    <Collapsible defaultOpen className="group/collapsible">
+    <SidebarMenuItem>
       {state === "expanded" ? (
-        <SidebarMenuItem>
+        <Collapsible defaultOpen className="group/collapsible">
           <div className="group/sidebar-menu-btn">
             <SidebarMenuButton className="cursor-pointer">
               <History />
@@ -60,6 +60,7 @@ export default function HistoryItem({ chats }: { chats: Chat[] }) {
                     </SidebarMenuSubButton>
                   </SidebarMenuSubItem>
                 ))}
+
                 <SidebarMenuSubItem>
                   <SidebarMenuSubButton className="cursor-pointer text-xs font-semibold whitespace-nowrap text-gray-600 hover:bg-transparent active:bg-transparent">
                     See all
@@ -68,16 +69,14 @@ export default function HistoryItem({ chats }: { chats: Chat[] }) {
               </SidebarMenuSub>
             </CollapsibleContent>
           )}
-        </SidebarMenuItem>
+        </Collapsible>
       ) : (
         <HoverCard openDelay={150} closeDelay={150}>
-          <HoverCardTrigger>
-            <SidebarMenuItem>
-              <SidebarMenuButton className="cursor-pointer">
-                <History />
-                <span className="sr-only">Chat history</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
+          <HoverCardTrigger asChild>
+            <SidebarMenuButton className="cursor-pointer">
+              <History />
+              <span className="sr-only">Chat history</span>
+            </SidebarMenuButton>
           </HoverCardTrigger>
 
           <HoverCardContent side="right" align="start">
@@ -85,6 +84,6 @@ export default function HistoryItem({ chats }: { chats: Chat[] }) {
           </HoverCardContent>
         </HoverCard>
       )}
-    </Collapsible>
+    </SidebarMenuItem>
   )
 }

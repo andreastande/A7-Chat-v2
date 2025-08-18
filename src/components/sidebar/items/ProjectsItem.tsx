@@ -7,9 +7,12 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
   useSidebar,
 } from "@/components/ui/sidebar"
 import { ChevronRight, Folder, Plus } from "lucide-react"
+import Link from "next/link"
 import { usePathname } from "next/navigation"
 
 export default function ProjectsItem() {
@@ -20,13 +23,15 @@ export default function ProjectsItem() {
   const projects = []
 
   return (
-    <Collapsible defaultOpen className="group/collapsible">
+    <SidebarMenuItem>
       {state === "expanded" ? (
-        <SidebarMenuItem>
+        <Collapsible defaultOpen className="group/collapsible">
           <div className="group/sidebar-menu-btn">
-            <SidebarMenuButton isActive={isActive} className="cursor-pointer">
-              <Folder />
-              <span className="ml-2 font-medium">Projects</span>
+            <SidebarMenuButton asChild isActive={isActive}>
+              <Link href="#">
+                <Folder />
+                <span className="ml-2 font-medium">Projects</span>
+              </Link>
             </SidebarMenuButton>
 
             {projects.length > 0 && (
@@ -56,19 +61,25 @@ export default function ProjectsItem() {
                   </SidebarMenuSubItem>
                 ))}
                 */}
+
+                <SidebarMenuSubItem>
+                  <SidebarMenuSubButton className="cursor-pointer text-xs font-semibold whitespace-nowrap text-gray-600 hover:bg-transparent active:bg-transparent">
+                    See all
+                  </SidebarMenuSubButton>
+                </SidebarMenuSubItem>
               </SidebarMenuSub>
             </CollapsibleContent>
           )}
-        </SidebarMenuItem>
+        </Collapsible>
       ) : (
         <HoverCard openDelay={150} closeDelay={150}>
-          <HoverCardTrigger>
-            <SidebarMenuItem>
-              <SidebarMenuButton isActive={isActive} className="cursor-pointer">
+          <HoverCardTrigger asChild>
+            <SidebarMenuButton asChild isActive={isActive} className="cursor-pointer">
+              <Link href="#">
                 <Folder />
                 <span className="sr-only">Projects</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
+              </Link>
+            </SidebarMenuButton>
           </HoverCardTrigger>
 
           <HoverCardContent side="right" align="start">
@@ -76,6 +87,6 @@ export default function ProjectsItem() {
           </HoverCardContent>
         </HoverCard>
       )}
-    </Collapsible>
+    </SidebarMenuItem>
   )
 }

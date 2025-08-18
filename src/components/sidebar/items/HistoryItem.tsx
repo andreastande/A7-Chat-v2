@@ -30,60 +30,65 @@ export default function HistoryItem({ chats }: { chats: Chat[] }) {
   const tenMostRecentChats = chats.slice(0, 10)
 
   return (
-    <SidebarMenuItem>
+    <>
       {state === "expanded" ? (
         <Collapsible defaultOpen className="group/collapsible">
-          <div className="group/sidebar-menu-btn">
-            <SidebarMenuButton className="cursor-pointer">
-              <History />
-              <span className="ml-2 font-medium">History</span>
-            </SidebarMenuButton>
+          <SidebarMenuItem>
+            <div className="group/sidebar-menu-btn">
+              <SidebarMenuButton className="cursor-pointer">
+                <History />
+                <span className="ml-2 font-medium">History</span>
+              </SidebarMenuButton>
+
+              {tenMostRecentChats.length > 0 && (
+                <CollapsibleTrigger asChild>
+                  <SidebarMenuAction className="bg-sidebar-accent text-sidebar-accent-foreground left-1 hidden group-hover/sidebar-menu-btn:flex">
+                    <ChevronRight className="transition-transform group-data-[state=open]/collapsible:rotate-90" />
+                    <span className="sr-only">Toggle</span>
+                  </SidebarMenuAction>
+                </CollapsibleTrigger>
+              )}
+            </div>
 
             {tenMostRecentChats.length > 0 && (
-              <CollapsibleTrigger asChild>
-                <SidebarMenuAction className="bg-sidebar-accent text-sidebar-accent-foreground left-1.5 hidden group-hover/sidebar-menu-btn:flex">
-                  <ChevronRight className="transition-transform group-data-[state=open]/collapsible:rotate-90" />
-                </SidebarMenuAction>
-              </CollapsibleTrigger>
-            )}
-          </div>
+              <CollapsibleContent className="data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down overflow-hidden transition-all">
+                <SidebarMenuSub>
+                  {tenMostRecentChats.map((chat) => (
+                    <SidebarMenuSubItem key={chat.id}>
+                      <SidebarMenuSubButton asChild isActive={chat.id === chatId}>
+                        <Link href={`/chat/${chat.id}`}>
+                          <span className="whitespace-nowrap">{chat.title}</span>
+                        </Link>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                  ))}
 
-          {tenMostRecentChats.length > 0 && (
-            <CollapsibleContent className="data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down overflow-hidden transition-all">
-              <SidebarMenuSub>
-                {tenMostRecentChats.map((chat) => (
-                  <SidebarMenuSubItem key={chat.id}>
-                    <SidebarMenuSubButton asChild isActive={chat.id === chatId}>
-                      <Link href={`/chat/${chat.id}`}>
-                        <span className="whitespace-nowrap">{chat.title}</span>
-                      </Link>
+                  <SidebarMenuSubItem>
+                    <SidebarMenuSubButton className="cursor-pointer text-xs font-semibold whitespace-nowrap text-gray-600 hover:bg-transparent active:bg-transparent">
+                      See all
                     </SidebarMenuSubButton>
                   </SidebarMenuSubItem>
-                ))}
-
-                <SidebarMenuSubItem>
-                  <SidebarMenuSubButton className="cursor-pointer text-xs font-semibold whitespace-nowrap text-gray-600 hover:bg-transparent active:bg-transparent">
-                    See all
-                  </SidebarMenuSubButton>
-                </SidebarMenuSubItem>
-              </SidebarMenuSub>
-            </CollapsibleContent>
-          )}
+                </SidebarMenuSub>
+              </CollapsibleContent>
+            )}
+          </SidebarMenuItem>
         </Collapsible>
       ) : (
         <HoverCard openDelay={150} closeDelay={150}>
-          <HoverCardTrigger asChild>
-            <SidebarMenuButton className="cursor-pointer">
-              <History />
-              <span className="sr-only">Chat history</span>
-            </SidebarMenuButton>
-          </HoverCardTrigger>
+          <SidebarMenuItem>
+            <HoverCardTrigger asChild>
+              <SidebarMenuButton className="cursor-pointer">
+                <History />
+                <span className="sr-only">Chat history</span>
+              </SidebarMenuButton>
+            </HoverCardTrigger>
 
-          <HoverCardContent side="right" align="start">
-            To be worked on :D
-          </HoverCardContent>
+            <HoverCardContent side="right" align="start">
+              To be worked on :D
+            </HoverCardContent>
+          </SidebarMenuItem>
         </HoverCard>
       )}
-    </SidebarMenuItem>
+    </>
   )
 }

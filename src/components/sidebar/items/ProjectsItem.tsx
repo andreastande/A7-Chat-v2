@@ -23,34 +23,37 @@ export default function ProjectsItem() {
   const projects = []
 
   return (
-    <SidebarMenuItem>
+    <>
       {state === "expanded" ? (
         <Collapsible defaultOpen className="group/collapsible">
-          <div className="group/sidebar-menu-btn">
-            <SidebarMenuButton asChild isActive={isActive}>
-              <Link href="#">
-                <Folder />
-                <span className="ml-2 font-medium">Projects</span>
-              </Link>
-            </SidebarMenuButton>
+          <SidebarMenuItem>
+            <div className="group/sidebar-menu-btn">
+              <SidebarMenuButton asChild isActive={isActive}>
+                <Link href="#">
+                  <Folder />
+                  <span className="ml-2 font-medium">Projects</span>
+                </Link>
+              </SidebarMenuButton>
+
+              {projects.length > 0 && (
+                <CollapsibleTrigger asChild>
+                  <SidebarMenuAction className="bg-sidebar-accent text-sidebar-accent-foreground left-1 hidden group-hover/sidebar-menu-btn:flex">
+                    <ChevronRight className="transition-transform group-data-[state=open]/collapsible:rotate-90" />
+                    <span className="sr-only">Toggle</span>
+                  </SidebarMenuAction>
+                </CollapsibleTrigger>
+              )}
+
+              <SidebarMenuAction className="hidden group-hover/sidebar-menu-btn:flex">
+                <Plus />
+                <span className="sr-only">Add project</span>
+              </SidebarMenuAction>
+            </div>
 
             {projects.length > 0 && (
-              <CollapsibleTrigger asChild>
-                <SidebarMenuAction className="bg-sidebar-accent text-sidebar-accent-foreground left-1.5 hidden group-hover/sidebar-menu-btn:flex">
-                  <ChevronRight className="transition-transform group-data-[state=open]/collapsible:rotate-90" />
-                </SidebarMenuAction>
-              </CollapsibleTrigger>
-            )}
-
-            <SidebarMenuAction className="hidden group-hover/sidebar-menu-btn:flex">
-              <Plus />
-            </SidebarMenuAction>
-          </div>
-
-          {projects.length > 0 && (
-            <CollapsibleContent className="data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down overflow-hidden transition-all">
-              <SidebarMenuSub>
-                {/*
+              <CollapsibleContent className="data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down overflow-hidden transition-all">
+                <SidebarMenuSub>
+                  {/*
                 {projects.map((project) => (
                   <SidebarMenuSubItem key={chat.id}>
                     <SidebarMenuSubButton asChild isActive={chat.id === chatId}>
@@ -62,31 +65,34 @@ export default function ProjectsItem() {
                 ))}
                 */}
 
-                <SidebarMenuSubItem>
-                  <SidebarMenuSubButton className="cursor-pointer text-xs font-semibold whitespace-nowrap text-gray-600 hover:bg-transparent active:bg-transparent">
-                    See all
-                  </SidebarMenuSubButton>
-                </SidebarMenuSubItem>
-              </SidebarMenuSub>
-            </CollapsibleContent>
-          )}
+                  <SidebarMenuSubItem>
+                    <SidebarMenuSubButton className="cursor-pointer text-xs font-semibold whitespace-nowrap text-gray-600 hover:bg-transparent active:bg-transparent">
+                      See all
+                    </SidebarMenuSubButton>
+                  </SidebarMenuSubItem>
+                </SidebarMenuSub>
+              </CollapsibleContent>
+            )}
+          </SidebarMenuItem>
         </Collapsible>
       ) : (
         <HoverCard openDelay={150} closeDelay={150}>
-          <HoverCardTrigger asChild>
-            <SidebarMenuButton asChild isActive={isActive} className="cursor-pointer">
-              <Link href="#">
-                <Folder />
-                <span className="sr-only">Projects</span>
-              </Link>
-            </SidebarMenuButton>
-          </HoverCardTrigger>
+          <SidebarMenuItem>
+            <HoverCardTrigger asChild>
+              <SidebarMenuButton asChild isActive={isActive} className="cursor-pointer">
+                <Link href="#">
+                  <Folder />
+                  <span className="sr-only">Projects</span>
+                </Link>
+              </SidebarMenuButton>
+            </HoverCardTrigger>
 
-          <HoverCardContent side="right" align="start">
-            To be worked on :D
-          </HoverCardContent>
+            <HoverCardContent side="right" align="start">
+              To be worked on :D
+            </HoverCardContent>
+          </SidebarMenuItem>
         </HoverCard>
       )}
-    </SidebarMenuItem>
+    </>
   )
 }

@@ -1,19 +1,21 @@
 "use client"
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import {
   SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
+  SidebarMenuSubAction,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
   useSidebar,
 } from "@/components/ui/sidebar"
 import { chat } from "@/db/schema"
 import { createSelectSchema } from "drizzle-zod"
-import { ChevronRight, History } from "lucide-react"
+import { ChevronRight, History, MoreVertical } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import z from "zod"
@@ -54,13 +56,32 @@ export default function HistoryItem({ chats }: { chats: Chat[] }) {
               <CollapsibleContent className="data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down overflow-hidden transition-all">
                 <SidebarMenuSub>
                   {tenMostRecentChats.map((chat) => (
-                    <SidebarMenuSubItem key={chat.id}>
-                      <SidebarMenuSubButton asChild isActive={chat.id === chatId}>
-                        <Link href={`/chat/${chat.id}`}>
-                          <span className="whitespace-nowrap">{chat.title}</span>
-                        </Link>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
+                    <DropdownMenu key={chat.id}>
+                      <SidebarMenuSubItem>
+                        <SidebarMenuSubButton
+                          asChild
+                          isActive={chat.id === chatId}
+                          className="peer/sidebar-menu-sub-button"
+                        >
+                          <Link href={`/chat/${chat.id}`}>
+                            <span className="whitespace-nowrap">{chat.title}</span>
+                          </Link>
+                        </SidebarMenuSubButton>
+
+                        <DropdownMenuTrigger asChild>
+                          <SidebarMenuSubAction
+                            showOnHover
+                            className="bg-sidebar-accent text-sidebar-accent-foreground"
+                          >
+                            <MoreVertical />
+                          </SidebarMenuSubAction>
+                        </DropdownMenuTrigger>
+
+                        <DropdownMenuContent side="right" align="start">
+                          <DropdownMenuItem>Rename</DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </SidebarMenuSubItem>
+                    </DropdownMenu>
                   ))}
 
                   <SidebarMenuSubItem>

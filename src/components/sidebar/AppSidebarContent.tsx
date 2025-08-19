@@ -4,8 +4,8 @@ import { SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu } from "
 import ChatItem from "./items/ChatItem"
 import FilesItem from "./items/FilesItem"
 import GalleryItem from "./items/GalleryItem"
-import HistoryItem from "./items/HistoryItem"
-import ProjectsItem from "./items/ProjectsItem"
+import HistoryItem from "./items/history/HistoryItem"
+import ProjectsItem from "./items/project/ProjectsItem"
 
 export default async function AppSidebarContent() {
   const { isAuth, userId } = await verifySession()

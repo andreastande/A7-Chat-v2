@@ -14,7 +14,6 @@ import { chat } from "@/db/schema"
 import { createSelectSchema } from "drizzle-zod"
 import { Folder, FolderInput, FolderPlus, MoreVertical, PencilLine, Pin, Share, Trash } from "lucide-react"
 import Link from "next/link"
-import { useState } from "react"
 import z from "zod"
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -22,8 +21,6 @@ const chatSchema = createSelectSchema(chat)
 type Chat = z.infer<typeof chatSchema>
 
 export default function ChatEntry({ activeChatId, chat }: { activeChatId?: string; chat: Chat }) {
-  const [isEditingTitle, setIsEditingTitle] = useState(false)
-
   return (
     <DropdownMenu>
       <SidebarMenuSubItem>
@@ -47,7 +44,7 @@ export default function ChatEntry({ activeChatId, chat }: { activeChatId?: strin
           <DropdownMenuItem>
             <Share /> Share
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setIsEditingTitle(true)}>
+          <DropdownMenuItem>
             <PencilLine /> Rename
           </DropdownMenuItem>
 

@@ -195,7 +195,7 @@ function Sidebar({
       data-slot="sidebar"
       onClick={(e) =>
         !(e.target as HTMLElement).closest(
-          "button, a, [data-slot='sidebar-content-wrapper'], [data-slot='dropdown-menu-content']"
+          "button, a, [data-slot='sidebar-content-wrapper'], [data-slot='dropdown-menu-content'], [data-slot='dropdown-menu-sub-content']"
         ) && toggleSidebar()
       }
     >

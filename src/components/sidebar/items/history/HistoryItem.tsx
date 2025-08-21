@@ -14,7 +14,6 @@ import {
 import { chat } from "@/db/schema"
 import { createSelectSchema } from "drizzle-zod"
 import { ChevronRight, History } from "lucide-react"
-import { usePathname } from "next/navigation"
 import z from "zod"
 import ChatEntry from "./ChatEntry"
 
@@ -24,9 +23,7 @@ export type Chat = z.infer<typeof chatSchema>
 
 export default function HistoryItem({ chats }: { chats: Chat[] }) {
   const { state } = useSidebar()
-  const pathname = usePathname()
 
-  const chatId = pathname.startsWith("/chat/") ? pathname.split("/chat/")[1] : undefined
   const tenMostRecentChats = chats.slice(0, 10)
 
   return (

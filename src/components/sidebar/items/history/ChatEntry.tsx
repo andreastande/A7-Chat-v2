@@ -1,3 +1,5 @@
+"use client"
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,28 +16,57 @@ import { chat } from "@/db/schema"
 import { createSelectSchema } from "drizzle-zod"
 import { Folder, FolderInput, FolderPlus, MoreVertical, PencilLine, Pin, Share, Trash } from "lucide-react"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { useState } from "react"
 import z from "zod"
+import ChatTitleEditor from "./ChatTitleEditor"
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const chatSchema = createSelectSchema(chat)
 type Chat = z.infer<typeof chatSchema>
 
-export default function ChatEntry({ activeChatId, chat }: { activeChatId?: string; chat: Chat }) {
+export default function ChatEntry({ chat }: { chat: Chat }) {
+  const pathname = usePathname()
+
+  const [isEditingTitle, setIsEditingTitle] = useState(false)
+  const [title, setTitle] = useState(chat.title)
+
+  const activeChatId = pathname.startsWith("/chat/") ? pathname.split("/chat/")[1] : undefined
+
   return (
     <DropdownMenu>
       <SidebarMenuSubItem>
-        <SidebarMenuSubButton asChild isActive={chat.id === activeChatId} className="peer/sidebar-menu-sub-button">
-          <Link href={`/chat/${chat.id}`}>
-            <span className="whitespace-nowrap">{chat.title}</span>
-          </Link>
+        <SidebarMenuSubButton
+          asChild={!isEditingTitle}
+          isActive={chat.id === activeChatId || isEditingTitle}
+          className="peer/sidebar-menu-sub-button"
+        >
+          {isEditingTitle ? (
+            <ChatTitleEditor
+              chatId={chat.id}
+              currentTitle={title}
+              setTitle={setTitle}
+              closeEditor={() => setIsEditingTitle(false)}
+            />
+          ) : (
+            <Link href={`/chat/${chat.id}`}>
+              <span className="whitespace-nowrap">{title}</span>
+            </Link>
+          )}
         </SidebarMenuSubButton>
 
-        <DropdownMenuTrigger asChild>
-          <SidebarMenuSubAction showOnHover className="bg-sidebar-accent text-sidebar-accent-foreground">
-            <MoreVertical />
-            <span className="sr-only">Chat options</span>
-          </SidebarMenuSubAction>
-        </DropdownMenuTrigger>
+        {!isEditingTitle && (
+          <DropdownMenuTrigger asChild>
+            <SidebarMenuSubAction
+              showOnHover
+              className="bg-sidebar-accent text-sidebar-accent-foreground"
+              aria-label="Chat options"
+            >
+              <MoreVertical />
+              <span className="sr-only">Chat options</span>
+            </SidebarMenuSubAction>
+          </DropdownMenuTrigger>
+        )}
 
         <DropdownMenuContent side="right" align="start" onCloseAutoFocus={(e) => e.preventDefault()} className="w-45">
           <DropdownMenuItem>
@@ -44,7 +75,7 @@ export default function ChatEntry({ activeChatId, chat }: { activeChatId?: strin
           <DropdownMenuItem>
             <Share /> Share
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setIsEditingTitle(true)}>
             <PencilLine /> Rename
           </DropdownMenuItem>
 

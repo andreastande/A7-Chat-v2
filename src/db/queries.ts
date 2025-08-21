@@ -70,3 +70,10 @@ export async function generateAndUpdateTitle(userId: string, chatId: string, mes
     })
     .where(and(eq(chat.id, chatId), eq(chat.userId, userId)))
 }
+
+export async function renameChatTitle(userId: string, chatId: string, newTitle: string) {
+  await db
+    .update(chat)
+    .set({ title: newTitle, updatedAt: chat.updatedAt })
+    .where(and(eq(chat.id, chatId), eq(chat.userId, userId)))
+}

@@ -3,6 +3,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuPortal,
+  DropdownMenuSeparator,
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
@@ -11,7 +12,7 @@ import {
 import { SidebarMenuSubAction, SidebarMenuSubButton, SidebarMenuSubItem } from "@/components/ui/sidebar"
 import { chat } from "@/db/schema"
 import { createSelectSchema } from "drizzle-zod"
-import { FolderInput, MoreVertical, PencilLine, Pin, Trash } from "lucide-react"
+import { FolderInput, MoreVertical, PencilLine, Pin, Share, Trash } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
 import z from "zod"
@@ -41,8 +42,13 @@ export default function ChatEntry({ activeChatId, chat }: { activeChatId?: strin
 
         <DropdownMenuContent side="right" align="start" onCloseAutoFocus={(e) => e.preventDefault()} className="w-45">
           <DropdownMenuItem>
-            <Pin />
-            Pin
+            <Pin /> Pin
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Share /> Share
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setIsEditingTitle(true)}>
+            <PencilLine /> Rename
           </DropdownMenuItem>
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>
@@ -55,9 +61,8 @@ export default function ChatEntry({ activeChatId, chat }: { activeChatId?: strin
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
           </DropdownMenuSub>
-          <DropdownMenuItem onClick={() => setIsEditingTitle(true)}>
-            <PencilLine /> Rename
-          </DropdownMenuItem>
+
+          <DropdownMenuSeparator />
           <DropdownMenuItem>
             <Trash />
             Delete

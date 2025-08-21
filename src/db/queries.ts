@@ -77,3 +77,7 @@ export async function renameChatTitle(userId: string, chatId: string, newTitle: 
     .set({ title: newTitle, updatedAt: chat.updatedAt })
     .where(and(eq(chat.id, chatId), eq(chat.userId, userId)))
 }
+
+export async function deleteChat(userId: string, chatId: string) {
+  await db.delete(chat).where(and(eq(chat.id, chatId), eq(chat.userId, userId)))
+}

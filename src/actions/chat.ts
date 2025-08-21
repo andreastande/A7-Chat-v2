@@ -2,6 +2,7 @@
 
 import {
   createChat as createChatDb,
+  deleteChat as deleteChatDb,
   generateAndUpdateTitle as generateAndUpdateTitleDb,
   isChatOwnedByUser,
   renameChatTitle as renameChatTitleDb,
@@ -32,4 +33,13 @@ export async function renameChatTitle(chatId: string, newTitle: string) {
   if (!(await isChatOwnedByUser(userId, chatId))) throw new Error("Forbidden")
 
   await renameChatTitleDb(userId, chatId, newTitle)
+}
+
+export async function deleteChat(chatId: string) {
+  const { isAuth, userId } = await verifySession()
+
+  if (!isAuth) throw new Error("Unauthorized")
+  if (!(await isChatOwnedByUser(userId, chatId))) throw new Error("Forbidden")
+
+  await deleteChatDb(userId, chatId)
 }

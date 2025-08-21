@@ -1,5 +1,6 @@
 "use client"
 
+import { deleteChat as deleteChatDb } from "@/actions/chat"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,8 +17,9 @@ import { chat } from "@/db/schema"
 import { createSelectSchema } from "drizzle-zod"
 import { Folder, FolderInput, FolderPlus, MoreVertical, PencilLine, Pin, Share, Trash } from "lucide-react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { useState } from "react"
+import { toast } from "sonner"
 import z from "zod"
 import ChatTitleEditor from "./ChatTitleEditor"
 
@@ -25,13 +27,29 @@ import ChatTitleEditor from "./ChatTitleEditor"
 const chatSchema = createSelectSchema(chat)
 type Chat = z.infer<typeof chatSchema>
 
-export default function ChatEntry({ chat }: { chat: Chat }) {
+export default function ChatEntry({ chat, deleteChat }: { chat: Chat; deleteChat: (id: string) => void }) {
   const pathname = usePathname()
+  const router = useRouter()
 
   const [isEditingTitle, setIsEditingTitle] = useState(false)
   const [title, setTitle] = useState(chat.title)
 
   const activeChatId = pathname.startsWith("/chat/") ? pathname.split("/chat/")[1] : undefined
+
+  const handleDeleteChat = async () => {
+    toast.promise(deleteChatDb(chat.id), {
+      loading: "Deleting chat…",
+      success: () => {
+        deleteChat(chat.id)
+
+        if (chat.id === activeChatId) {
+          router.push("/")
+        }
+        return `Chat "${chat.title}" deleted!`
+      },
+      error: "Couldn't delete chat.",
+    })
+  }
 
   return (
     <>
@@ -103,7 +121,7 @@ export default function ChatEntry({ chat }: { chat: Chat }) {
               </DropdownMenuSub>
 
               <DropdownMenuSeparator className="mx-2" />
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={handleDeleteChat}>
                 <Trash />
                 Delete
               </DropdownMenuItem>

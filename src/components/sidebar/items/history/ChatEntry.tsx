@@ -12,7 +12,7 @@ import {
 import { SidebarMenuSubAction, SidebarMenuSubButton, SidebarMenuSubItem } from "@/components/ui/sidebar"
 import { chat } from "@/db/schema"
 import { createSelectSchema } from "drizzle-zod"
-import { FolderInput, MoreVertical, PencilLine, Pin, Share, Trash } from "lucide-react"
+import { Folder, FolderInput, FolderPlus, MoreVertical, PencilLine, Pin, Share, Trash } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
 import z from "zod"
@@ -50,19 +50,28 @@ export default function ChatEntry({ activeChatId, chat }: { activeChatId?: strin
           <DropdownMenuItem onClick={() => setIsEditingTitle(true)}>
             <PencilLine /> Rename
           </DropdownMenuItem>
+
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>
               <FolderInput /> Move to project
             </DropdownMenuSubTrigger>
             <DropdownMenuPortal>
-              <DropdownMenuSubContent>
-                <DropdownMenuItem>Project 1</DropdownMenuItem>
-                <DropdownMenuItem>Project 2</DropdownMenuItem>
+              <DropdownMenuSubContent className="w-40">
+                <DropdownMenuItem>
+                  <FolderPlus /> New project
+                </DropdownMenuItem>
+                <DropdownMenuSeparator className="mx-2" />
+                <DropdownMenuItem>
+                  <Folder /> Project 1
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Folder /> Project 2
+                </DropdownMenuItem>
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
           </DropdownMenuSub>
 
-          <DropdownMenuSeparator />
+          <DropdownMenuSeparator className="mx-2" />
           <DropdownMenuItem>
             <Trash />
             Delete

@@ -46,7 +46,7 @@ export default function ProjectsItem() {
 
               <SidebarMenuAction className="hidden group-hover/sidebar-menu-btn:flex">
                 <Plus />
-                <span className="sr-only">Add project</span>
+                <span className="sr-only">Create new project</span>
               </SidebarMenuAction>
             </div>
 

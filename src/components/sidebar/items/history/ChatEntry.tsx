@@ -34,78 +34,83 @@ export default function ChatEntry({ chat }: { chat: Chat }) {
   const activeChatId = pathname.startsWith("/chat/") ? pathname.split("/chat/")[1] : undefined
 
   return (
-    <DropdownMenu>
-      <SidebarMenuSubItem>
-        <SidebarMenuSubButton
-          asChild={!isEditingTitle}
-          isActive={chat.id === activeChatId || isEditingTitle}
-          className="peer/sidebar-menu-sub-button"
-        >
-          {isEditingTitle ? (
+    <>
+      {isEditingTitle ? (
+        <SidebarMenuSubItem>
+          <SidebarMenuSubButton isActive>
             <ChatTitleEditor
               chatId={chat.id}
               currentTitle={title}
               setTitle={setTitle}
               closeEditor={() => setIsEditingTitle(false)}
             />
-          ) : (
-            <Link href={`/chat/${chat.id}`}>
-              <span className="whitespace-nowrap">{title}</span>
-            </Link>
-          )}
-        </SidebarMenuSubButton>
+          </SidebarMenuSubButton>
+        </SidebarMenuSubItem>
+      ) : (
+        <DropdownMenu>
+          <SidebarMenuSubItem>
+            <SidebarMenuSubButton asChild isActive={chat.id === activeChatId || isEditingTitle}>
+              <Link href={`/chat/${chat.id}`}>
+                <span className="whitespace-nowrap">{title}</span>
+              </Link>
+            </SidebarMenuSubButton>
 
-        {!isEditingTitle && (
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuSubAction
-              showOnHover
-              className="bg-sidebar-accent text-sidebar-accent-foreground"
-              aria-label="Chat options"
+            <DropdownMenuTrigger asChild>
+              <SidebarMenuSubAction
+                showOnHover
+                className="bg-sidebar-accent text-sidebar-accent-foreground"
+                aria-label="Chat options"
+              >
+                <MoreVertical />
+                <span className="sr-only">Chat options</span>
+              </SidebarMenuSubAction>
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent
+              side="right"
+              align="start"
+              onCloseAutoFocus={(e) => e.preventDefault()}
+              className="w-45"
             >
-              <MoreVertical />
-              <span className="sr-only">Chat options</span>
-            </SidebarMenuSubAction>
-          </DropdownMenuTrigger>
-        )}
+              <DropdownMenuItem>
+                <Pin /> Pin
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Share /> Share
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setIsEditingTitle(true)}>
+                <PencilLine /> Rename
+              </DropdownMenuItem>
 
-        <DropdownMenuContent side="right" align="start" onCloseAutoFocus={(e) => e.preventDefault()} className="w-45">
-          <DropdownMenuItem>
-            <Pin /> Pin
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Share /> Share
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setIsEditingTitle(true)}>
-            <PencilLine /> Rename
-          </DropdownMenuItem>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>
+                  <FolderInput /> Move to project
+                </DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent className="w-40">
+                    <DropdownMenuItem>
+                      <FolderPlus /> New project
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator className="mx-2" />
+                    <DropdownMenuItem>
+                      <Folder /> Project 1
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Folder /> Project 2
+                    </DropdownMenuItem>
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
 
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger>
-              <FolderInput /> Move to project
-            </DropdownMenuSubTrigger>
-            <DropdownMenuPortal>
-              <DropdownMenuSubContent className="w-40">
-                <DropdownMenuItem>
-                  <FolderPlus /> New project
-                </DropdownMenuItem>
-                <DropdownMenuSeparator className="mx-2" />
-                <DropdownMenuItem>
-                  <Folder /> Project 1
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Folder /> Project 2
-                </DropdownMenuItem>
-              </DropdownMenuSubContent>
-            </DropdownMenuPortal>
-          </DropdownMenuSub>
-
-          <DropdownMenuSeparator className="mx-2" />
-          <DropdownMenuItem>
-            <Trash />
-            Delete
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </SidebarMenuSubItem>
-    </DropdownMenu>
+              <DropdownMenuSeparator className="mx-2" />
+              <DropdownMenuItem>
+                <Trash />
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </SidebarMenuSubItem>
+        </DropdownMenu>
+      )}
+    </>
   )
 }

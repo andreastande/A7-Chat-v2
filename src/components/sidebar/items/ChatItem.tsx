@@ -7,14 +7,14 @@ import { usePathname } from "next/navigation"
 
 export default function ChatItem() {
   const pathname = usePathname()
-  const isActive = pathname === "/" || pathname.startsWith("/chat/")
+  const isActive = pathname === "/"
 
   return (
     <SidebarMenuItem>
       <SidebarMenuButton asChild isActive={isActive}>
         <Link href="/">
           <SquarePen />
-          <span className="ml-2">Chat</span>
+          <span className="ml-2 font-medium">Chat</span>
         </Link>
       </SidebarMenuButton>
     </SidebarMenuItem>

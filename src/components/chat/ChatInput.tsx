@@ -3,7 +3,7 @@
 import { useAutoFocusOnTyping } from "@/hooks/useAutoFocusOnTyping"
 import { UseChatHelpers } from "@ai-sdk/react"
 import { UIMessage } from "ai"
-import { Paperclip, Send, Square } from "lucide-react"
+import { Plus, Send, Square } from "lucide-react"
 import Image from "next/image"
 import { useRef, useState } from "react"
 import TextareaAutosize from "react-textarea-autosize"
@@ -12,8 +12,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 import WithTooltip from "../WithTooltip"
 
 interface ChatInputProps {
-  status: UseChatHelpers<UIMessage>["status"]
-  stop: UseChatHelpers<UIMessage>["stop"]
+  status?: UseChatHelpers<UIMessage>["status"]
+  stop?: UseChatHelpers<UIMessage>["stop"]
   onSend: (msg: string) => void
 }
 
@@ -33,7 +33,7 @@ export default function ChatInput({ status, stop, onSend }: ChatInputProps) {
       onSend(input.trim())
       setInput("")
     } else if (canStop) {
-      stop()
+      stop?.()
     }
   }
 
@@ -62,7 +62,7 @@ export default function ChatInput({ status, stop, onSend }: ChatInputProps) {
         minRows={2}
         maxRows={11}
         onKeyDown={(e) => {
-          if (e.key === "Enter" && !e.shiftKey) {
+          if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
             e.preventDefault()
             handleSubmit()
           }
@@ -93,10 +93,10 @@ export default function ChatInput({ status, stop, onSend }: ChatInputProps) {
 
           <div className="h-5 w-px bg-zinc-950/10" />
 
-          <WithTooltip content="Add photos & files" side="bottom">
+          <WithTooltip content="Add files and more" side="bottom">
             <Button size="icon" variant="ghost" className="size-8 cursor-pointer">
-              <Paperclip />
-              <span className="sr-only">Add photos & files</span>
+              <Plus />
+              <span className="sr-only">Add files and more</span>
             </Button>
           </WithTooltip>
         </div>

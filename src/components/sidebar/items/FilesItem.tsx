@@ -14,7 +14,7 @@ export default function FilesItem() {
       <SidebarMenuButton asChild isActive={isActive}>
         <Link href="#">
           <FileText />
-          <span className="ml-2">Files</span>
+          <span className="ml-2 font-medium">Files</span>
         </Link>
       </SidebarMenuButton>
     </SidebarMenuItem>

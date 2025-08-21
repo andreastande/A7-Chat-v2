@@ -1,9 +1,8 @@
 "use client"
 
-import { createChat, generateAndUpdateTitle } from "@/actions/chat"
 import { UIMessage, useChat } from "@ai-sdk/react"
 import { DefaultChatTransport } from "ai"
-import { useState } from "react"
+import { useEffect, useRef } from "react"
 import Message from "./Message"
 import PositionedChatInput from "./PositionedChatInput"
 
@@ -13,12 +12,9 @@ interface ChatProps {
 }
 
 export default function Chat({ id, initialMessages = [] }: ChatProps) {
-  const [chatId] = useState(id ?? crypto.randomUUID())
-
-  const { status, messages, sendMessage, stop } = useChat({
-    id: chatId,
+  const { status, messages, sendMessage, stop, regenerate } = useChat({
+    id,
     messages: initialMessages,
-    experimental_throttle: 50,
     transport: new DefaultChatTransport({
       prepareSendMessagesRequest({ messages, id }) {
         return { body: { message: messages[messages.length - 1], id } }
@@ -26,42 +22,35 @@ export default function Chat({ id, initialMessages = [] }: ChatProps) {
     }),
   })
 
-  const isNewChat = !id ? true : false
-  const isEmptyChat = messages.length === 0
+  const didRegenerateRef = useRef(false)
 
-  const handleSendMessage = async (message: string) => {
-    if (isNewChat && isEmptyChat) {
-      window.history.pushState(null, "", `/chat/${chatId}`)
-      await createChat(chatId)
-      void generateAndUpdateTitle(chatId, message)
+  useEffect(() => {
+    if (initialMessages.length === 1 && !didRegenerateRef.current) {
+      didRegenerateRef.current = true
+      regenerate()
     }
-    sendMessage({ text: message })
+  }, [initialMessages.length, regenerate])
+
+  const handleSendMessage = (msg: string) => {
+    sendMessage({ text: msg })
   }
 
   return (
     <>
-      {isEmptyChat ? (
-        <div className="absolute top-1/2 left-1/2 w-full max-w-3xl -translate-x-1/2 -translate-y-[174.5px]">
-          <p className="mx-auto mb-7 w-fit bg-gradient-to-r from-blue-500 to-pink-500 bg-clip-text text-2xl text-transparent">
-            What&apos;s on your mind today?
-          </p>
-          <PositionedChatInput mode="empty" status={status} stop={stop} onSend={handleSendMessage} />
+      <div className="flex justify-center">
+        <div className="prose flex w-full max-w-3xl flex-col space-y-14 pt-14 pb-40">
+          {messages.map((message) => (
+            <Message key={message.id} message={message} />
+          ))}
+
+          <PositionedChatInput
+            mode={initialMessages.length === 1 ? "animate" : "static"}
+            status={status}
+            stop={stop}
+            onSend={handleSendMessage}
+          />
         </div>
-      ) : (
-        <div className="flex justify-center">
-          <div className="prose flex w-full max-w-3xl flex-col space-y-14 pt-14 pb-40">
-            {messages.map((message) => (
-              <Message key={message.id} message={message} />
-            ))}
-            <PositionedChatInput
-              mode={isNewChat ? "animate" : "static"}
-              status={status}
-              stop={stop}
-              onSend={handleSendMessage}
-            />
-          </div>
-        </div>
-      )}
+      </div>
     </>
   )
 }

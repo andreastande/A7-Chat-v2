@@ -9,5 +9,9 @@ export const verifySession = cache(async () => {
     headers: await headers(),
   })
 
-  return { user: session?.user ?? null }
+  if (!session) {
+    return { isAuth: false, userId: null, user: null } as const
+  }
+
+  return { isAuth: true, userId: session.user.id, user: session.user } as const
 })

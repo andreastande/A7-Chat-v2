@@ -79,6 +79,9 @@ export const message = pgTable("message", {
   chatId: text("chat_id")
     .notNull()
     .references(() => chat.id, { onDelete: "cascade" }),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
   uiMessage: jsonb("ui_message").notNull(),
   createdAt: timestamp("created_at")
     .$defaultFn(() => /* @__PURE__ */ new Date())

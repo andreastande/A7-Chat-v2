@@ -1,17 +1,19 @@
-import Chat from "@/components/chat/Chat"
+import ChatStarter from "@/components/chat/ChatStarter"
 import AppSidebar from "@/components/sidebar/AppSidebar"
-import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
+import { SidebarTrigger } from "@/components/ui/sidebar"
+import { verifySession } from "@/lib/dal"
 
-export default function Home() {
+export default async function Home() {
+  const { isAuth } = await verifySession()
+
   return (
     <>
-      <AppSidebar variant="inset" collapsible="icon" />
-      <SidebarInset>
-        <SidebarTrigger className="sticky top-3 mt-3 ml-3 cursor-pointer md:hidden" />
-        {/* <ThemeToggle className="sticky top-3 mt-3 mr-3 cursor-pointer" /> */}
+      {isAuth && <AppSidebar collapsible="icon" />}
+      <main className="bg-sidebar relative w-full">
+        {isAuth && <SidebarTrigger className="sticky top-3 mt-3 ml-3 cursor-pointer md:hidden" />}
 
-        <Chat />
-      </SidebarInset>
+        <ChatStarter />
+      </main>
     </>
   )
 }

@@ -4,12 +4,11 @@ import { useAutoFocusOnTyping } from "@/hooks/useAutoFocusOnTyping"
 import { UseChatHelpers } from "@ai-sdk/react"
 import { UIMessage } from "ai"
 import { Plus, Send, Square } from "lucide-react"
-import Image from "next/image"
 import { useRef, useState } from "react"
 import TextareaAutosize from "react-textarea-autosize"
 import { Button } from "../ui/button"
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 import WithTooltip from "../WithTooltip"
+import ModelPicker from "./ModelPicker"
 
 interface ChatInputProps {
   status?: UseChatHelpers<UIMessage>["status"]
@@ -72,24 +71,7 @@ export default function ChatInput({ status, stop, onSend }: ChatInputProps) {
 
       <div className="flex justify-between">
         <div className="flex -translate-x-2 items-center space-x-2">
-          <Popover>
-            <WithTooltip content="Select model" side="bottom">
-              <PopoverTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  aria-label="Select model, current: 4.1 Nano"
-                  className="cursor-pointer font-normal"
-                >
-                  <Image src="/logos/OpenAI.svg" alt="OpenAI Logo" width={16} height={16} />
-                  4.1 Nano
-                </Button>
-              </PopoverTrigger>
-            </WithTooltip>
-            <PopoverContent side="bottom" align="start">
-              Model picker
-            </PopoverContent>
-          </Popover>
+          <ModelPicker />
 
           <div className="h-5 w-px bg-zinc-950/10" />
 

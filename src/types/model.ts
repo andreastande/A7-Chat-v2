@@ -20,7 +20,7 @@ export type Model = {
     input: number
     output: number
   }
-  contextLength?: {
+  tokenLimits?: {
     input: number
     output: number
   }

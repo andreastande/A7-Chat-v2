@@ -8,7 +8,7 @@ import { useRef, useState } from "react"
 import TextareaAutosize from "react-textarea-autosize"
 import { Button } from "../ui/button"
 import WithTooltip from "../WithTooltip"
-import ModelPicker from "./ModelPicker"
+import ModelPicker from "./model-picker/ModelPicker"
 
 interface ChatInputProps {
   status?: UseChatHelpers<UIMessage>["status"]

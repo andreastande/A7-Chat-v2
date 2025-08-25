@@ -1,6 +1,5 @@
 import "server-only"
 
-import { openai } from "@ai-sdk/openai"
 import { generateText, UIMessage } from "ai"
 import { and, desc, eq } from "drizzle-orm"
 import { db } from "."
@@ -55,7 +54,7 @@ export async function createChat(userId: string, chatId: string, model: string) 
 
 export async function generateAndUpdateTitle(userId: string, chatId: string, message: string) {
   const { text: title } = await generateText({
-    model: openai("gpt-4.1-nano"),
+    model: "openai/gpt-4.1-nano",
     system: `
       You are a helpful assistant that writes concise, topic-specific chat titles 
       based on the user's first message. Limit to 2-5 words.

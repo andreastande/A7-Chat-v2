@@ -1,8 +1,10 @@
 "use client"
 
+import { Model } from "@/types/model"
 import { UIMessage, useChat } from "@ai-sdk/react"
 import { DefaultChatTransport } from "ai"
 import { useEffect, useRef } from "react"
+import { useModel } from "../providers/ModelProvider"
 import Message from "./Message"
 import PositionedChatInput from "./PositionedChatInput"
 
@@ -12,12 +14,15 @@ interface ChatProps {
 }
 
 export default function Chat({ id, initialMessages = [] }: ChatProps) {
+  const { model } = useModel()
   const { status, messages, sendMessage, stop, regenerate } = useChat({
     id,
     messages: initialMessages,
     transport: new DefaultChatTransport({
-      prepareSendMessagesRequest({ messages, id }) {
-        return { body: { message: messages[messages.length - 1], id } }
+      prepareSendMessagesRequest({ messages, id, requestMetadata }) {
+        return {
+          body: { message: messages[messages.length - 1], id, model: requestMetadata as Model },
+        }
       },
     }),
   })
@@ -32,7 +37,7 @@ export default function Chat({ id, initialMessages = [] }: ChatProps) {
   }, [initialMessages.length, regenerate])
 
   const handleSendMessage = (msg: string) => {
-    sendMessage({ text: msg })
+    sendMessage({ text: msg }, { metadata: model })
   }
 
   return (

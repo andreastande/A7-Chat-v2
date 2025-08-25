@@ -7,7 +7,7 @@ const OPENAI_MODELS: Model[] = [
     modelFamily: "GPT",
     description:
       "OpenAI's flagship reasoning model, designed for highly complex problem solving, analysis, and creative tasks with top-tier accuracy.",
-    apiName: "gpt-5-2025-08-07",
+    apiName: "gpt-5",
     capabilities: {
       reasoning: true,
       webSearch: true,
@@ -26,7 +26,7 @@ const OPENAI_MODELS: Model[] = [
     provider: "OpenAI",
     modelFamily: "GPT",
     description: "A smaller, faster version of GPT-5, balancing reasoning ability with much lower cost and latency.",
-    apiName: "gpt-5-mini-2025-08-07",
+    apiName: "gpt-5-mini",
     capabilities: {
       reasoning: true,
       webSearch: true,
@@ -46,7 +46,7 @@ const OPENAI_MODELS: Model[] = [
     modelFamily: "GPT",
     description:
       "The most lightweight GPT-5 variant, optimized for speed and affordability while still offering solid reasoning.",
-    apiName: "gpt-5-nano-2025-08-07",
+    apiName: "gpt-5-nano",
     capabilities: {
       reasoning: true,
       webSearch: true,
@@ -66,7 +66,7 @@ const OPENAI_MODELS: Model[] = [
     modelFamily: "GPT",
     description:
       "The first multimodal “omni” model from OpenAI, capable of handling text, vision, and audio seamlessly in real time.",
-    apiName: "gpt-4o-2024-08-06",
+    apiName: "gpt-4o",
     capabilities: {
       reasoning: true,
       webSearch: true,
@@ -86,7 +86,7 @@ const OPENAI_MODELS: Model[] = [
     modelFamily: "GPT",
     description:
       "A refined GPT-4 series model with improved performance, efficiency, and broader context handling compared to GPT-4o.",
-    apiName: "gpt-4.1-2025-04-14",
+    apiName: "gpt-4.1",
     capabilities: {
       reasoning: true,
       webSearch: true,
@@ -106,7 +106,7 @@ const OPENAI_MODELS: Model[] = [
     modelFamily: "GPT",
     description:
       "An advanced reasoning model specialized for deeply analytical, structured, and multi-step problem solving.",
-    apiName: "o3-pro-2025-06-10",
+    apiName: "o3-pro",
     capabilities: {
       reasoning: true,
       webSearch: true,
@@ -126,7 +126,7 @@ const OPENAI_MODELS: Model[] = [
     modelFamily: "GPT",
     description:
       "A lighter variant of the o-series reasoning models, offering strong reasoning ability at lower cost and speed.",
-    apiName: "o3-2025-04-16",
+    apiName: "o3",
     capabilities: {
       reasoning: true,
       webSearch: true,
@@ -146,7 +146,7 @@ const OPENAI_MODELS: Model[] = [
     modelFamily: "GPT",
     description:
       "A compact next-gen model focused on efficiency, offering good reasoning capabilities with low latency and cost.",
-    apiName: "o4-mini-2025-04-16",
+    apiName: "o4-mini",
     capabilities: {
       reasoning: true,
       webSearch: true,
@@ -184,7 +184,7 @@ const ANTHROPIC_MODELS: Model[] = [
     provider: "Anthropic",
     modelFamily: "Claude",
     description: "Cool model",
-    apiName: "claude-sonnet-4-20250514",
+    apiName: "claude-sonnet-4",
   },
 ]
 

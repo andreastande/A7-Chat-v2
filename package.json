@@ -10,6 +10,7 @@
     "db:push": "npx drizzle-kit push"
   },
   "dependencies": {
+    "@ai-sdk/gateway": "^1.0.11",
     "@ai-sdk/openai": "2.0.0-beta.9",
     "@ai-sdk/react": "2.0.0-beta.21",
     "@hookform/resolvers": "^5.1.1",

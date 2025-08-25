@@ -1,6 +1,6 @@
 import { getUIMessagesInChat, insertUIMessagesInChat, isChatOwnedByUser } from "@/db/queries"
 import { verifySession } from "@/lib/dal"
-import { openai } from "@ai-sdk/openai"
+import { Model } from "@/types/model"
 import { convertToModelMessages, streamText, UIMessage } from "ai"
 import { NextResponse } from "next/server"
 
@@ -8,7 +8,7 @@ import { NextResponse } from "next/server"
 export const maxDuration = 30
 
 export async function POST(req: Request) {
-  const { message, id: chatId }: { message: UIMessage; id: string } = await req.json()
+  const { message, id: chatId, model }: { message: UIMessage; id: string; model: Model } = await req.json()
 
   const { isAuth, userId } = await verifySession()
 
@@ -24,8 +24,9 @@ export async function POST(req: Request) {
   const messages = [...dbMessages, message]
 
   const result = streamText({
-    model: openai("gpt-4.1-nano"),
+    model: model.provider.toLowerCase() + "/" + model.apiName,
     messages: convertToModelMessages(messages),
+    system: `In case the user asks which model you are, you are ${model.label}.`,
   })
 
   return result.toUIMessageStreamResponse({

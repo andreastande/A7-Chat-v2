@@ -32,7 +32,7 @@ export default function Chat({ id, initialMessages = [] }: ChatProps) {
   useEffect(() => {
     if (initialMessages.length === 1 && !didRegenerateRef.current) {
       didRegenerateRef.current = true
-      regenerate()
+      regenerate({ metadata: model })
     }
   }, [initialMessages.length, regenerate])
 

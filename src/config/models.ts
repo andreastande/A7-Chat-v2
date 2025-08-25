@@ -184,7 +184,7 @@ const ANTHROPIC_MODELS: Model[] = [
     provider: "Anthropic",
     modelFamily: "Claude",
     description: "Cool model",
-    apiName: "",
+    apiName: "claude-sonnet-4-20250514",
   },
 ]
 
@@ -204,7 +204,7 @@ const XAI_MODELS: Model[] = [
     provider: "xAI",
     modelFamily: "Grok",
     description: "Cool model",
-    apiName: "",
+    apiName: "grok-4",
   },
 ]
 

@@ -6,7 +6,9 @@ import { Button } from "../../ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuLabel,
   DropdownMenuPortal,
+  DropdownMenuSeparator,
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
@@ -14,15 +16,18 @@ import {
 } from "../../ui/dropdown-menu"
 import WithTooltip from "../../WithTooltip"
 
+import { useModel } from "@/components/providers/ModelProvider"
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import ModelHoverContent from "./ModelHoverContent"
 
 function ModelList({ provider, hoverCardSideOffset }: { provider: string; hoverCardSideOffset: number }) {
+  const { setModel } = useModel()
+
   return MODELS_BY_PROVIDER[provider].map((model) => (
     <HoverCard key={model.label} openDelay={120} closeDelay={120}>
       <HoverCardTrigger asChild>
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setModel(model)}>
           <Image
             src={`/logos/model-families/${model.modelFamily}.svg`}
             alt={`Model family ${model.modelFamily}`}
@@ -32,7 +37,7 @@ function ModelList({ provider, hoverCardSideOffset }: { provider: string; hoverC
           <span className="text-[13px]">{model.label}</span>
         </DropdownMenuItem>
       </HoverCardTrigger>
-      <HoverCardContent side="right" align="center" className="w-80" sideOffset={hoverCardSideOffset}>
+      <HoverCardContent side="right" align="start" className="w-80" sideOffset={hoverCardSideOffset}>
         <ModelHoverContent model={model} />
       </HoverCardContent>
     </HoverCard>
@@ -40,6 +45,8 @@ function ModelList({ provider, hoverCardSideOffset }: { provider: string; hoverC
 }
 
 export default function ModelPicker() {
+  const { model, recentModels, setModel } = useModel()
+
   return (
     <DropdownMenu>
       <WithTooltip content="Select model" side="bottom">
@@ -47,16 +54,40 @@ export default function ModelPicker() {
           <Button
             variant="ghost"
             size="sm"
-            aria-label="Select model, current: 4.1 Nano"
+            aria-label={`Select model, current: ${model.label}`}
             className="cursor-pointer font-normal"
           >
-            <Image src="/logos/providers/OpenAI.svg" alt="OpenAI Logo" width={16} height={16} />
-            GPT 4.1 Nano
+            <Image
+              src={`/logos/model-families/${model.modelFamily}.svg`}
+              alt={`${model.modelFamily} logo`}
+              width={16}
+              height={16}
+            />
+            {model.label}
           </Button>
         </DropdownMenuTrigger>
       </WithTooltip>
 
-      <DropdownMenuContent side="bottom" align="start" onCloseAutoFocus={(e) => e.preventDefault()} className="w-40">
+      <DropdownMenuContent side="bottom" align="start" onCloseAutoFocus={(e) => e.preventDefault()} className="w-54">
+        {recentModels.length > 1 && (
+          <>
+            <DropdownMenuLabel>Recently used</DropdownMenuLabel>
+            {recentModels.map((model) => (
+              <DropdownMenuItem key={model.label} onClick={() => setModel(model)}>
+                <Image
+                  src={`/logos/model-families/${model.modelFamily}.svg`}
+                  alt={`Model family ${model.modelFamily}`}
+                  width={13}
+                  height={13}
+                />
+                <span className="text-[13px]">{model.label}</span>
+              </DropdownMenuItem>
+            ))}
+            <DropdownMenuSeparator className="mx-2" />
+            <DropdownMenuLabel>Providers</DropdownMenuLabel>
+          </>
+        )}
+
         {PROVIDERS.map((provider) => (
           <DropdownMenuSub key={provider}>
             <DropdownMenuSubTrigger>

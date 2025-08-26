@@ -39,7 +39,7 @@ function ModelList({ models, hoverCardSideOffset }: { models: Model[]; hoverCard
         </div>
 
         <HoverCardTrigger>
-          <Info className="hidden size-3 group-focus/dropdown-menu-item:flex" />
+          <Info className="hidden size-3.5 group-focus/dropdown-menu-item:flex" />
         </HoverCardTrigger>
       </DropdownMenuItem>
 

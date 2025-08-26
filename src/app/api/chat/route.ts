@@ -21,7 +21,7 @@ export async function POST(req: Request) {
   }
 
   const dbMessages = await getUIMessagesInChat(userId, chatId)
-  const messages = [...dbMessages, message]
+  const messages = dbMessages.length > 1 ? [...dbMessages, message] : [message]
 
   const result = streamText({
     model: model.provider.toLowerCase() + "/" + model.apiName,

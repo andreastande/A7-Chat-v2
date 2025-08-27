@@ -99,8 +99,8 @@ export default function ModelPicker() {
 
             <DropdownMenuPortal>
               <DropdownMenuSubContent className="w-50">
-                {MODELS_BY_PROVIDER[provider].length > 4 ? (
-                  <ScrollArea className="h-35 pr-3">
+                {MODELS_BY_PROVIDER[provider].length > 6 ? (
+                  <ScrollArea className="h-42 pr-3">
                     <ModelList models={MODELS_BY_PROVIDER[provider]} hoverCardSideOffset={30} />
                   </ScrollArea>
                 ) : (

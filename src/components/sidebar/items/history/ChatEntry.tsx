@@ -1,6 +1,7 @@
 "use client"
 
 import { deleteChat as deleteChatDb } from "@/actions/chat"
+import { useChatHistory } from "@/components/providers/ChatHistoryProvider"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,34 +14,35 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { SidebarMenuSubAction, SidebarMenuSubButton, SidebarMenuSubItem } from "@/components/ui/sidebar"
-import { chat } from "@/db/schema"
-import { createSelectSchema } from "drizzle-zod"
+import { Chat } from "@/types/chat"
 import { Folder, FolderInput, FolderPlus, MoreVertical, PencilLine, Pin, Share, Trash } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { toast } from "sonner"
-import z from "zod"
 import ChatTitleEditor from "./ChatTitleEditor"
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const chatSchema = createSelectSchema(chat)
-type Chat = z.infer<typeof chatSchema>
+export default function ChatEntry({ chat }: { chat: Chat }) {
+  const { removeChat } = useChatHistory()
 
-export default function ChatEntry({ chat, deleteChat }: { chat: Chat; deleteChat: (id: string) => void }) {
   const pathname = usePathname()
   const router = useRouter()
 
   const [isEditingTitle, setIsEditingTitle] = useState(false)
-  const [title, setTitle] = useState(chat.title)
+  const [draftTitle, setDraftTitle] = useState(chat.title)
 
   const activeChatId = pathname.startsWith("/chat/") ? pathname.split("/chat/")[1] : undefined
+
+  const startEditing = () => {
+    setDraftTitle(chat.title)
+    setIsEditingTitle(true)
+  }
 
   const handleDeleteChat = async () => {
     toast.promise(deleteChatDb(chat.id), {
       loading: "Deleting chat…",
       success: () => {
-        deleteChat(chat.id)
+        removeChat(chat.id)
 
         if (chat.id === activeChatId) {
           router.push("/")
@@ -51,6 +53,10 @@ export default function ChatEntry({ chat, deleteChat }: { chat: Chat; deleteChat
     })
   }
 
+  useEffect(() => {
+    if (!isEditingTitle) setDraftTitle(chat.title)
+  }, [chat.title, isEditingTitle])
+
   return (
     <>
       {isEditingTitle ? (
@@ -58,8 +64,9 @@ export default function ChatEntry({ chat, deleteChat }: { chat: Chat; deleteChat
           <SidebarMenuSubButton isActive>
             <ChatTitleEditor
               chatId={chat.id}
-              currentTitle={title}
-              setTitle={setTitle}
+              initialTitle={chat.title}
+              draftTitle={draftTitle}
+              setDraftTitle={setDraftTitle}
               closeEditor={() => setIsEditingTitle(false)}
             />
           </SidebarMenuSubButton>
@@ -69,7 +76,7 @@ export default function ChatEntry({ chat, deleteChat }: { chat: Chat; deleteChat
           <SidebarMenuSubItem>
             <SidebarMenuSubButton asChild isActive={chat.id === activeChatId || isEditingTitle}>
               <Link href={`/chat/${chat.id}`}>
-                <span className="whitespace-nowrap">{title}</span>
+                <span className="whitespace-nowrap">{chat.title}</span>
               </Link>
             </SidebarMenuSubButton>
 
@@ -96,7 +103,7 @@ export default function ChatEntry({ chat, deleteChat }: { chat: Chat; deleteChat
               <DropdownMenuItem>
                 <Share /> Share
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setIsEditingTitle(true)}>
+              <DropdownMenuItem onClick={startEditing}>
                 <PencilLine /> Rename
               </DropdownMenuItem>
 

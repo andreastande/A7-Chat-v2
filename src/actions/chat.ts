@@ -23,7 +23,7 @@ export async function generateAndUpdateTitle(chatId: string, message: string) {
   if (!isAuth) throw new Error("Unauthorized")
   if (!(await isChatOwnedByUser(userId, chatId))) throw new Error("Forbidden")
 
-  await generateAndUpdateTitleDb(userId, chatId, message)
+  return await generateAndUpdateTitleDb(userId, chatId, message)
 }
 
 export async function renameChatTitle(chatId: string, newTitle: string) {

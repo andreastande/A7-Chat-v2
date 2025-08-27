@@ -1,3 +1,5 @@
+import { getChats } from "@/db/queries"
+import { verifySession } from "@/lib/dal"
 import { SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu } from "../ui/sidebar"
 import ChatItem from "./items/ChatItem"
 import FilesItem from "./items/FilesItem"
@@ -5,7 +7,10 @@ import GalleryItem from "./items/GalleryItem"
 import HistoryItem from "./items/history/HistoryItem"
 import ProjectsItem from "./items/project/ProjectsItem"
 
-export default function AppSidebarContent() {
+export default async function AppSidebarContent() {
+  const { userId } = await verifySession()
+  const chats = await getChats(userId!) // Sidebar is only shown if user is authenticated, do can safely access userId
+
   return (
     <SidebarContent>
       <div data-slot="sidebar-content-wrapper" className="cursor-default">
@@ -23,7 +28,7 @@ export default function AppSidebarContent() {
           <SidebarGroupContent>
             <SidebarMenu>
               <ProjectsItem />
-              <HistoryItem />
+              <HistoryItem serverChats={chats} />
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

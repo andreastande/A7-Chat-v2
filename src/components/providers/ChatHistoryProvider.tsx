@@ -21,6 +21,8 @@ type ChatHistoryContextProps = {
 
   /** Update updatedAt to now and move to top. */
   touchChat: (chatId: string) => void
+
+  replaceAll: (chats: Chat[]) => void
 }
 
 const ChatHistoryContext = React.createContext<ChatHistoryContextProps | null>(null)
@@ -92,9 +94,23 @@ export function ChatHistoryProvider({
     })
   }, [])
 
+  const replaceAll = React.useCallback((next: Chat[]) => {
+    setChats((prev) => {
+      // tiny structural guard to avoid useless renders
+      const same =
+        prev.length === next.length &&
+        prev.every(
+          (p, i) =>
+            p.id === next[i].id && p.title === next[i].title && String(p.updatedAt) === String(next[i].updatedAt)
+        )
+      if (same) return prev
+      return sortChatsByUpdatedAtDesc(next)
+    })
+  }, [])
+
   const value = React.useMemo<ChatHistoryContextProps>(
-    () => ({ chats, addChat, removeChat, renameChat, touchChat }),
-    [chats, addChat, removeChat, renameChat, touchChat]
+    () => ({ chats, addChat, removeChat, renameChat, touchChat, replaceAll }),
+    [chats, addChat, removeChat, renameChat, touchChat, replaceAll]
   )
 
   return (

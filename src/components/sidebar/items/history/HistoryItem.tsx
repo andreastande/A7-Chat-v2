@@ -12,12 +12,18 @@ import {
   SidebarMenuSubItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { Chat } from "@/types/chat"
 import { ChevronRight, History } from "lucide-react"
+import { useEffect } from "react"
 import ChatEntry from "./ChatEntry"
 
-export default function HistoryItem() {
+export default function HistoryItem({ serverChats }: { serverChats: Chat[] }) {
   const { state } = useSidebar()
-  const { chats } = useChatHistory()
+  const { chats, replaceAll } = useChatHistory()
+
+  useEffect(() => {
+    replaceAll(serverChats)
+  }, [serverChats, replaceAll])
 
   const tenMostRecentChats = chats.slice(0, 10)
 

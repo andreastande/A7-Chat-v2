@@ -1,6 +1,6 @@
 "use client"
 
-import { createChat, generateAndUpdateTitle } from "@/actions/chat"
+import { createChat } from "@/actions/chat"
 import { insertUIMessagesInChat } from "@/actions/message"
 import { generateId, UIDataTypes, UIMessage, UIMessagePart, UITools } from "ai"
 import { useRouter } from "next/navigation"
@@ -12,16 +12,16 @@ export default function ChatStarter() {
   async function handleSendMessage(msg: string) {
     const chatId = crypto.randomUUID()
 
-    const toUIMessage = {
+    const toUIMessage: UIMessage = {
       id: generateId(),
       metadata: undefined,
       role: "user",
       parts: [{ type: "text", text: msg }] as Array<UIMessagePart<UIDataTypes, UITools>>,
-    } satisfies UIMessage
+    }
 
+    // db
     await createChat(chatId)
     await insertUIMessagesInChat(chatId, [toUIMessage])
-    void generateAndUpdateTitle(chatId, msg)
 
     router.push(`/chat/${chatId}`)
   }

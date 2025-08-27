@@ -8,12 +8,18 @@ import { toast } from "sonner"
 type ChatTitleEditorProps = {
   chatId: string
   initialTitle: string
-  title: string
-  setTitle: (newTitle: string) => void
+  draftTitle: string
+  setDraftTitle: (newTitle: string) => void
   closeEditor: () => void
 }
 
-export default function ChatTitleEditor({ chatId, initialTitle, title, setTitle, closeEditor }: ChatTitleEditorProps) {
+export default function ChatTitleEditor({
+  chatId,
+  initialTitle,
+  draftTitle,
+  setDraftTitle,
+  closeEditor,
+}: ChatTitleEditorProps) {
   const { renameChat } = useChatHistory()
 
   const formRef = useRef<HTMLFormElement>(null)
@@ -45,7 +51,7 @@ export default function ChatTitleEditor({ chatId, initialTitle, title, setTitle,
   }, [])
 
   const cancel = () => {
-    setTitle(initialTitle)
+    setDraftTitle(initialTitle)
     closeEditor()
   }
 
@@ -57,15 +63,14 @@ export default function ChatTitleEditor({ chatId, initialTitle, title, setTitle,
     }
 
     closeEditor()
+    renameChat(chatId, finalTitle)
 
     toast.promise(renameChatTitle(chatId, finalTitle), {
       loading: "Renaming chat…",
-      success: () => {
-        renameChat(chatId, finalTitle)
-        return `Chat "${initialTitle}" renamed to "${finalTitle}"!`
-      },
+      success: `Chat "${initialTitle}" renamed to "${finalTitle}"!`,
       error: () => {
-        setTitle(initialTitle)
+        setDraftTitle(initialTitle)
+        renameChat(chatId, initialTitle)
         return "Couldn't rename chat."
       },
     })
@@ -76,7 +81,7 @@ export default function ChatTitleEditor({ chatId, initialTitle, title, setTitle,
       ref={formRef}
       onSubmit={(e) => {
         e.preventDefault()
-        commit(title)
+        commit(draftTitle)
       }}
       onBlur={(e) => {
         const next = e.relatedTarget as Node | null
@@ -86,8 +91,8 @@ export default function ChatTitleEditor({ chatId, initialTitle, title, setTitle,
     >
       <input
         ref={inputRef}
-        value={title}
-        onChange={(e) => setTitle(e.currentTarget.value)}
+        value={draftTitle}
+        onChange={(e) => setDraftTitle(e.currentTarget.value)}
         onKeyDown={(e) => {
           if (e.key === "Escape") {
             e.preventDefault()

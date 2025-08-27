@@ -18,7 +18,7 @@ import { Chat } from "@/types/chat"
 import { Folder, FolderInput, FolderPlus, MoreVertical, PencilLine, Pin, Share, Trash } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import ChatTitleEditor from "./ChatTitleEditor"
 
@@ -29,9 +29,14 @@ export default function ChatEntry({ chat }: { chat: Chat }) {
   const router = useRouter()
 
   const [isEditingTitle, setIsEditingTitle] = useState(false)
-  const [title, setTitle] = useState(chat.title)
+  const [draftTitle, setDraftTitle] = useState(chat.title)
 
   const activeChatId = pathname.startsWith("/chat/") ? pathname.split("/chat/")[1] : undefined
+
+  const startEditing = () => {
+    setDraftTitle(chat.title)
+    setIsEditingTitle(true)
+  }
 
   const handleDeleteChat = async () => {
     toast.promise(deleteChatDb(chat.id), {
@@ -48,6 +53,10 @@ export default function ChatEntry({ chat }: { chat: Chat }) {
     })
   }
 
+  useEffect(() => {
+    if (!isEditingTitle) setDraftTitle(chat.title)
+  }, [chat.title, isEditingTitle])
+
   return (
     <>
       {isEditingTitle ? (
@@ -56,8 +65,8 @@ export default function ChatEntry({ chat }: { chat: Chat }) {
             <ChatTitleEditor
               chatId={chat.id}
               initialTitle={chat.title}
-              title={title}
-              setTitle={setTitle}
+              draftTitle={draftTitle}
+              setDraftTitle={setDraftTitle}
               closeEditor={() => setIsEditingTitle(false)}
             />
           </SidebarMenuSubButton>
@@ -67,7 +76,7 @@ export default function ChatEntry({ chat }: { chat: Chat }) {
           <SidebarMenuSubItem>
             <SidebarMenuSubButton asChild isActive={chat.id === activeChatId || isEditingTitle}>
               <Link href={`/chat/${chat.id}`}>
-                <span className="whitespace-nowrap">{title}</span>
+                <span className="whitespace-nowrap">{chat.title}</span>
               </Link>
             </SidebarMenuSubButton>
 
@@ -94,7 +103,7 @@ export default function ChatEntry({ chat }: { chat: Chat }) {
               <DropdownMenuItem>
                 <Share /> Share
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setIsEditingTitle(true)}>
+              <DropdownMenuItem onClick={startEditing}>
                 <PencilLine /> Rename
               </DropdownMenuItem>
 

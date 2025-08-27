@@ -36,6 +36,10 @@ export async function insertUIMessagesInChat(userId: string, chatId: string, uiM
       uiMessage: uiMsg,
     }))
   )
+  await db
+    .update(chat)
+    .set({ updatedAt: new Date() })
+    .where(and(eq(chat.id, chatId), eq(chat.userId, userId)))
 }
 
 export async function isChatOwnedByUser(userId: string, chatId: string) {
@@ -68,6 +72,8 @@ export async function generateAndUpdateTitle(userId: string, chatId: string, mes
       title,
     })
     .where(and(eq(chat.id, chatId), eq(chat.userId, userId)))
+
+  return title
 }
 
 export async function renameChatTitle(userId: string, chatId: string, newTitle: string) {

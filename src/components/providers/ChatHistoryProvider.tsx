@@ -1,15 +1,17 @@
 "use client"
 
+import { authClient } from "@/lib/auth-client"
 import { cn } from "@/lib/utils"
 import type { Chat } from "@/types/chat"
 import * as React from "react"
+import { useModel } from "./ModelProvider"
 
 type ChatHistoryContextProps = {
-  /** Sorted desc by updatedAt */
+  /** Sorted desc by updatedAt. */
   chats: Chat[]
 
-  /** Add a chat (dedup by id; replaces if id exists). */
-  addChat: (chat: Chat) => void
+  /** Add a chat. */
+  addChat: (chatId: string) => void
 
   /** Remove a chat by id. */
   removeChat: (chatId: string) => void
@@ -46,14 +48,30 @@ export function ChatHistoryProvider({
   initialChats?: Chat[]
 }) {
   const [chats, setChats] = React.useState<Chat[]>(sortChatsByUpdatedAtDesc(initialChats))
+  const { data: session } = authClient.useSession()
+  const { model } = useModel()
 
-  const addChat = React.useCallback((chat: Chat) => {
-    setChats((prev) => {
-      const idx = prev.findIndex((c) => c.id === chat.id)
-      const next = idx === -1 ? [...prev, chat] : [...prev.slice(0, idx), chat, ...prev.slice(idx + 1)]
-      return sortChatsByUpdatedAtDesc(next)
-    })
-  }, [])
+  const addChat = React.useCallback(
+    (chatId: string) => {
+      setChats((prev) => {
+        const newChat: Chat = {
+          id: chatId,
+          userId: session?.user.id ?? "", // TODO: Fix when user is guaranteed
+          title: "New chat",
+          model: model.apiName,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        }
+
+        // If a chat with this id exists, replace it; otherwise append.
+        const idx = prev.findIndex((c) => c.id === chatId)
+        const next = idx === -1 ? [...prev, newChat] : [...prev.slice(0, idx), newChat, ...prev.slice(idx + 1)]
+
+        return sortChatsByUpdatedAtDesc(next)
+      })
+    },
+    [session?.user.id, model.apiName]
+  )
 
   const removeChat = React.useCallback((chatId: string) => {
     setChats((prev) => prev.filter((c) => c.id !== chatId))

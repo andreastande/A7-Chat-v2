@@ -1,21 +1,23 @@
 "use client"
 
 import { renameChatTitle } from "@/actions/chat"
+import { useChatHistory } from "@/components/providers/ChatHistoryProvider"
 import { useEffect, useRef } from "react"
 import { toast } from "sonner"
 
 type ChatTitleEditorProps = {
   chatId: string
-  currentTitle: string
+  initialTitle: string
+  title: string
   setTitle: (newTitle: string) => void
   closeEditor: () => void
 }
 
-export default function ChatTitleEditor({ chatId, currentTitle, setTitle, closeEditor }: ChatTitleEditorProps) {
+export default function ChatTitleEditor({ chatId, initialTitle, title, setTitle, closeEditor }: ChatTitleEditorProps) {
+  const { renameChat } = useChatHistory()
+
   const formRef = useRef<HTMLFormElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
-
-  const initialTitleRef = useRef(currentTitle)
 
   useEffect(() => {
     const id = setTimeout(() => {
@@ -43,25 +45,27 @@ export default function ChatTitleEditor({ chatId, currentTitle, setTitle, closeE
   }, [])
 
   const cancel = () => {
-    setTitle(initialTitleRef.current)
+    setTitle(initialTitle)
     closeEditor()
   }
 
   const commit = (newTitle: string) => {
     const finalTitle = newTitle.trim()
-    if (!finalTitle || finalTitle === initialTitleRef.current) {
+    if (!finalTitle || finalTitle === initialTitle) {
       cancel()
       return
     }
 
-    setTitle(finalTitle)
     closeEditor()
 
     toast.promise(renameChatTitle(chatId, finalTitle), {
       loading: "Renaming chat…",
-      success: `Chat "${initialTitleRef.current}" renamed to "${finalTitle}"!`,
+      success: () => {
+        renameChat(chatId, finalTitle)
+        return `Chat "${initialTitle}" renamed to "${finalTitle}"!`
+      },
       error: () => {
-        setTitle(initialTitleRef.current)
+        setTitle(initialTitle)
         return "Couldn't rename chat."
       },
     })
@@ -72,7 +76,7 @@ export default function ChatTitleEditor({ chatId, currentTitle, setTitle, closeE
       ref={formRef}
       onSubmit={(e) => {
         e.preventDefault()
-        commit(currentTitle)
+        commit(title)
       }}
       onBlur={(e) => {
         const next = e.relatedTarget as Node | null
@@ -82,7 +86,7 @@ export default function ChatTitleEditor({ chatId, currentTitle, setTitle, closeE
     >
       <input
         ref={inputRef}
-        value={currentTitle}
+        value={title}
         onChange={(e) => setTitle(e.currentTarget.value)}
         onKeyDown={(e) => {
           if (e.key === "Escape") {

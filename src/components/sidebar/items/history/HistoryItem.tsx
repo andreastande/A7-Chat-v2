@@ -1,5 +1,6 @@
 "use client"
 
+import { useChatHistory } from "@/components/providers/ChatHistoryProvider"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import {
@@ -11,22 +12,14 @@ import {
   SidebarMenuSubItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { chat } from "@/db/schema"
-import { createSelectSchema } from "drizzle-zod"
 import { ChevronRight, History } from "lucide-react"
-import { useState } from "react"
-import z from "zod"
 import ChatEntry from "./ChatEntry"
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const chatSchema = createSelectSchema(chat)
-export type Chat = z.infer<typeof chatSchema>
-
-export default function HistoryItem({ chats }: { chats: Chat[] }) {
+export default function HistoryItem() {
   const { state } = useSidebar()
-  const [deletedChatIds, setDeletedChatIds] = useState<string[]>([])
+  const { chats } = useChatHistory()
 
-  const tenMostRecentChats = chats.filter((c) => !deletedChatIds.includes(c.id)).slice(0, 10)
+  const tenMostRecentChats = chats.slice(0, 10)
 
   return (
     <>
@@ -53,11 +46,7 @@ export default function HistoryItem({ chats }: { chats: Chat[] }) {
               <CollapsibleContent className="data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down overflow-hidden transition-all">
                 <SidebarMenuSub>
                   {tenMostRecentChats.map((chat) => (
-                    <ChatEntry
-                      key={chat.id}
-                      chat={chat}
-                      deleteChat={(id) => setDeletedChatIds((prev) => (prev.includes(id) ? prev : [...prev, id]))}
-                    />
+                    <ChatEntry key={chat.id} chat={chat} />
                   ))}
 
                   <SidebarMenuSubItem>

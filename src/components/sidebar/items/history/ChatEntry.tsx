@@ -1,6 +1,7 @@
 "use client"
 
 import { deleteChat as deleteChatDb } from "@/actions/chat"
+import { useChatHistory } from "@/components/providers/ChatHistoryProvider"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,21 +14,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { SidebarMenuSubAction, SidebarMenuSubButton, SidebarMenuSubItem } from "@/components/ui/sidebar"
-import { chat } from "@/db/schema"
-import { createSelectSchema } from "drizzle-zod"
+import { Chat } from "@/types/chat"
 import { Folder, FolderInput, FolderPlus, MoreVertical, PencilLine, Pin, Share, Trash } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useState } from "react"
 import { toast } from "sonner"
-import z from "zod"
 import ChatTitleEditor from "./ChatTitleEditor"
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const chatSchema = createSelectSchema(chat)
-type Chat = z.infer<typeof chatSchema>
+export default function ChatEntry({ chat }: { chat: Chat }) {
+  const { removeChat } = useChatHistory()
 
-export default function ChatEntry({ chat, deleteChat }: { chat: Chat; deleteChat: (id: string) => void }) {
   const pathname = usePathname()
   const router = useRouter()
 
@@ -40,7 +37,7 @@ export default function ChatEntry({ chat, deleteChat }: { chat: Chat; deleteChat
     toast.promise(deleteChatDb(chat.id), {
       loading: "Deleting chat…",
       success: () => {
-        deleteChat(chat.id)
+        removeChat(chat.id)
 
         if (chat.id === activeChatId) {
           router.push("/")
@@ -58,7 +55,8 @@ export default function ChatEntry({ chat, deleteChat }: { chat: Chat; deleteChat
           <SidebarMenuSubButton isActive>
             <ChatTitleEditor
               chatId={chat.id}
-              currentTitle={title}
+              initialTitle={chat.title}
+              title={title}
               setTitle={setTitle}
               closeEditor={() => setIsEditingTitle(false)}
             />

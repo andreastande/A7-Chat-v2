@@ -3,11 +3,11 @@
 import { useAutoFocusOnTyping } from "@/hooks/useAutoFocusOnTyping"
 import { UseChatHelpers } from "@ai-sdk/react"
 import { UIMessage } from "ai"
-import { Plus, Send, Square } from "lucide-react"
+import { Send, Square } from "lucide-react"
 import { useRef, useState } from "react"
 import TextareaAutosize from "react-textarea-autosize"
 import { Button } from "../ui/button"
-import WithTooltip from "../WithTooltip"
+import ChatToolsMenu from "./ChatToolsMenu"
 import ModelPicker from "./model-picker/ModelPicker"
 
 interface ChatInputProps {
@@ -71,16 +71,9 @@ export default function ChatInput({ status, stop, onSend }: ChatInputProps) {
 
       <div className="flex justify-between">
         <div className="flex -translate-x-2 items-center space-x-2">
-          <ModelPicker />
-
+          <ChatToolsMenu />
           <div className="h-5 w-px bg-zinc-950/10" />
-
-          <WithTooltip content="Add files and more" side="bottom">
-            <Button size="icon" variant="ghost" className="size-8 cursor-pointer">
-              <Plus />
-              <span className="sr-only">Add files and more</span>
-            </Button>
-          </WithTooltip>
+          <ModelPicker />
         </div>
 
         <Button

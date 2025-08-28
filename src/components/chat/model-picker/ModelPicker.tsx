@@ -56,22 +56,24 @@ export default function ModelPicker() {
   return (
     <DropdownMenu>
       <WithTooltip content="Select model" side="bottom">
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            size="sm"
-            aria-label={`Select model, current: ${model.label}`}
-            className="cursor-pointer font-normal"
-          >
-            <Image
-              src={`/logos/model-families/${model.modelFamily}.svg`}
-              alt={`${model.modelFamily} logo`}
-              width={16}
-              height={16}
-            />
-            {model.label}
-          </Button>
-        </DropdownMenuTrigger>
+        <div>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              aria-label={`Select model, current: ${model.label}`}
+              className="data-[state=open]:bg-accent data-[state=open]:text-accent-foreground dark:data-[state=open]:bg-accent/50 cursor-pointer font-normal"
+            >
+              <Image
+                src={`/logos/model-families/${model.modelFamily}.svg`}
+                alt={`${model.modelFamily} logo`}
+                width={16}
+                height={16}
+              />
+              {model.label}
+            </Button>
+          </DropdownMenuTrigger>
+        </div>
       </WithTooltip>
 
       <DropdownMenuContent side="bottom" align="start" onCloseAutoFocus={(e) => e.preventDefault()} className="w-54">

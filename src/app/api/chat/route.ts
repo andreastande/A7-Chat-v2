@@ -1,4 +1,4 @@
-import { getUIMessagesInChat, insertUIMessagesInChat, isChatOwnedByUser } from "@/db/queries"
+import { getUIMessagesInChat, insertUIMessageInChat, isChatOwnedByUser } from "@/db/queries"
 import { verifySession } from "@/lib/dal"
 import { Model } from "@/types/model"
 import { convertToModelMessages, streamText, UIMessage } from "ai"
@@ -21,7 +21,13 @@ export async function POST(req: Request) {
   }
 
   const dbMessages = await getUIMessagesInChat(userId, chatId)
-  const messages = dbMessages.length > 1 ? [...dbMessages, message] : [message]
+
+  const alreadyStoredInDB = dbMessages.some((m) => m.id === message.id)
+  if (!alreadyStoredInDB) {
+    await insertUIMessageInChat(userId, chatId, message)
+  }
+
+  const messages = alreadyStoredInDB ? dbMessages : [...dbMessages, message]
 
   const result = streamText({
     model: model.provider.toLowerCase() + "/" + model.apiName,
@@ -32,10 +38,8 @@ export async function POST(req: Request) {
   return result.toUIMessageStreamResponse({
     originalMessages: messages,
     onFinish: async ({ messages }) => {
-      const known = new Set(dbMessages.map((m) => m.id))
-      const toStore = messages.slice(dbMessages.length).filter((m) => !known.has(m.id))
-      if (!toStore.length) return
-      await insertUIMessagesInChat(userId, chatId, toStore)
+      const [, assistantMessage] = messages.slice(-2)
+      await insertUIMessageInChat(userId, chatId, assistantMessage)
     },
   })
 }

@@ -27,15 +27,13 @@ export async function getUIMessagesInChat(userId: string, chatId: string) {
   return UIMessages.map(({ uiMessage }) => uiMessage as UIMessage)
 }
 
-export async function insertUIMessagesInChat(userId: string, chatId: string, uiMessages: UIMessage[]) {
-  await db.insert(message).values(
-    uiMessages.map((uiMsg) => ({
-      id: uiMsg.id,
-      chatId,
-      userId,
-      uiMessage: uiMsg,
-    }))
-  )
+export async function insertUIMessageInChat(userId: string, chatId: string, uiMessage: UIMessage) {
+  await db.insert(message).values({
+    id: uiMessage.id,
+    chatId,
+    userId,
+    uiMessage,
+  })
   await db
     .update(chat)
     .set({ updatedAt: new Date() })

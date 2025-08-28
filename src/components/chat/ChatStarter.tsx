@@ -1,7 +1,7 @@
 "use client"
 
 import { createChat } from "@/actions/chat"
-import { insertUIMessagesInChat } from "@/actions/message"
+import { insertUIMessageInChat } from "@/actions/message"
 import { generateId, UIDataTypes, UIMessage, UIMessagePart, UITools } from "ai"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
@@ -24,7 +24,7 @@ export default function ChatStarter() {
     const chatId = crypto.randomUUID()
 
     await createChat(chatId)
-    await insertUIMessagesInChat(chatId, [uiMsg])
+    await insertUIMessageInChat(chatId, uiMsg)
 
     router.push(`/chat/${chatId}`)
   }

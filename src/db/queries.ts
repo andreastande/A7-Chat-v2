@@ -24,6 +24,7 @@ export async function getUIMessagesInChat(userId: string, chatId: string) {
     .select({ uiMessage: message.uiMessage })
     .from(message)
     .where(and(eq(message.chatId, chatId), eq(message.userId, userId)))
+    .orderBy(message.updatedAt)
   return UIMessages.map(({ uiMessage }) => uiMessage as UIMessage)
 }
 

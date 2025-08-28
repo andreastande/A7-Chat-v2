@@ -62,12 +62,7 @@ export default function Chat({ id, initialMessages = [] }: ChatProps) {
             <Message key={message.id} message={message} />
           ))}
 
-          <PositionedChatInput
-            mode={initialMessages.length === 1 ? "animate" : "static"}
-            status={status}
-            stop={stop}
-            onSend={handleSendMessage}
-          />
+          <PositionedChatInput mode={"static"} status={status} stop={stop} onSend={handleSendMessage} />
         </div>
       </div>
     </>

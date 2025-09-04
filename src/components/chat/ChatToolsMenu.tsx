@@ -9,7 +9,7 @@ import {
 } from "../ui/dropdown-menu"
 import WithTooltip from "../WithTooltip"
 
-export default function ChatToolsMenu() {
+export default function ChatToolsMenu({ openFileDialog }: { openFileDialog: () => void }) {
   return (
     <DropdownMenu>
       <WithTooltip content="Add files and more" side="bottom">
@@ -27,7 +27,7 @@ export default function ChatToolsMenu() {
         </div>
       </WithTooltip>
       <DropdownMenuContent side="bottom" align="start" onCloseAutoFocus={(e) => e.preventDefault()}>
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={openFileDialog}>
           <Paperclip /> Add photos & files
         </DropdownMenuItem>
         <DropdownMenuSeparator className="mx-2" />

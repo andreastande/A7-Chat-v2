@@ -38,6 +38,7 @@
     "prettier": "^3.6.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-dropzone": "^14.3.8",
     "react-hook-form": "^7.60.0",
     "react-markdown": "^10.1.0",
     "react-textarea-autosize": "^8.5.9",

@@ -2,15 +2,19 @@
 
 import { createChat } from "@/actions/chat"
 import { insertUIMessageInChat } from "@/actions/message"
+import { useFileUpload } from "@/hooks/useFileUpload"
 import { generateId, UIDataTypes, UIMessage, UIMessagePart, UITools } from "ai"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
+import FileDropOverlay from "../FileDropOverlay"
 import Message from "./Message"
 import PositionedChatInput from "./PositionedChatInput"
 
 export default function ChatStarter() {
   const router = useRouter()
   const [message, setMessage] = useState<UIMessage | null>(null)
+
+  const { files, isDragActive, getRootProps, getInputProps, open: openFileDialog } = useFileUpload()
 
   async function handleSendMessage(msg: string) {
     const uiMsg: UIMessage = {
@@ -30,12 +34,16 @@ export default function ChatStarter() {
   }
 
   return (
-    <>
+    <div {...getRootProps()} className="size-full">
+      <input {...getInputProps()} />
+      {isDragActive && <FileDropOverlay />}
+
       {message ? (
         <div className="flex justify-center">
           <div className="prose flex w-full max-w-3xl flex-col space-y-14 pt-14 pb-40">
             <Message message={message} />
-            <PositionedChatInput mode="animate" onSend={handleSendMessage} status="streaming" />
+            {/* prettier-ignore */}
+            <PositionedChatInput files={files} mode="animate" onSend={handleSendMessage} status="streaming" openFileDialog={openFileDialog} />
           </div>
         </div>
       ) : (
@@ -43,9 +51,9 @@ export default function ChatStarter() {
           <p className="mx-auto mb-7 w-fit bg-gradient-to-r from-blue-500 to-pink-500 bg-clip-text text-2xl text-transparent">
             What&apos;s on your mind today?
           </p>
-          <PositionedChatInput mode="empty" onSend={handleSendMessage} />
+          <PositionedChatInput files={files} mode="empty" onSend={handleSendMessage} openFileDialog={openFileDialog} />
         </div>
       )}
-    </>
+    </div>
   )
 }

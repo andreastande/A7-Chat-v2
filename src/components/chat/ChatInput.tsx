@@ -11,12 +11,14 @@ import ChatToolsMenu from "./ChatToolsMenu"
 import ModelPicker from "./model-picker/ModelPicker"
 
 interface ChatInputProps {
+  files: File[]
   status?: UseChatHelpers<UIMessage>["status"]
   stop?: UseChatHelpers<UIMessage>["stop"]
   onSend: (msg: string) => void
+  openFileDialog: () => void
 }
 
-export default function ChatInput({ status, stop, onSend }: ChatInputProps) {
+export default function ChatInput({ files, status, stop, onSend, openFileDialog }: ChatInputProps) {
   const [input, setInput] = useState("")
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
@@ -52,6 +54,13 @@ export default function ChatInput({ status, stop, onSend }: ChatInputProps) {
       onClick={handleFormClick}
       className="bg-background w-full cursor-text rounded-3xl p-4 shadow ring ring-zinc-950/10"
     >
+      {files.length > 0 && (
+        <div className="mb-2 flex gap-2">
+          {files.map((file) => (
+            <span key={file.name}>{file.name}</span>
+          ))}
+        </div>
+      )}
       <TextareaAutosize
         ref={textareaRef}
         autoFocus
@@ -71,7 +80,7 @@ export default function ChatInput({ status, stop, onSend }: ChatInputProps) {
 
       <div className="flex justify-between">
         <div className="flex -translate-x-2 items-center space-x-2">
-          <ChatToolsMenu />
+          <ChatToolsMenu openFileDialog={openFileDialog} />
           <div className="h-5 w-px bg-zinc-950/10" />
           <ModelPicker />
         </div>

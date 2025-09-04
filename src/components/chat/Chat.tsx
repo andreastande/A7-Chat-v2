@@ -1,9 +1,11 @@
 "use client"
 
 import { generateAndUpdateTitle } from "@/actions/chat"
+import { useFileUpload } from "@/hooks/useFileUpload"
 import { UIMessage, useChat } from "@ai-sdk/react"
 import { DefaultChatTransport } from "ai"
 import { useEffect, useRef } from "react"
+import FileDropOverlay from "../FileDropOverlay"
 import { useChatHistory } from "../providers/ChatHistoryProvider"
 import { useModel } from "../providers/ModelProvider"
 import Message from "./Message"
@@ -17,6 +19,7 @@ interface ChatProps {
 export default function Chat({ id, initialMessages = [] }: ChatProps) {
   const { model } = useModel()
   const { renameChat, touchChat, addChat } = useChatHistory()
+  const { files, isDragActive, getRootProps, getInputProps, open: openFileDialog } = useFileUpload()
 
   const { status, messages, sendMessage, stop, regenerate } = useChat({
     id,
@@ -55,16 +58,21 @@ export default function Chat({ id, initialMessages = [] }: ChatProps) {
   }
 
   return (
-    <>
+    <div {...getRootProps()} className="size-full">
+      <input {...getInputProps()} />
+      {isDragActive && <FileDropOverlay />}
+
       <div className="flex justify-center">
         <div className="prose flex w-full max-w-3xl flex-col space-y-14 pt-14 pb-40">
           {messages.map((message) => (
             <Message key={message.id} message={message} />
           ))}
 
-          <PositionedChatInput mode={"static"} status={status} stop={stop} onSend={handleSendMessage} />
+          {/* prettier-ignore */}
+          <PositionedChatInput mode={"static"} files={files} status={status} stop={stop} onSend={handleSendMessage} openFileDialog={openFileDialog}
+          />
         </div>
       </div>
-    </>
+    </div>
   )
 }

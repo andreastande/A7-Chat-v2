@@ -37,11 +37,16 @@ export function useFileUpload() {
     }
   }, [])
 
-  const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
+  const {
+    getRootProps,
+    getInputProps,
+    isDragActive,
+    open: openFileDialog,
+  } = useDropzone({
     onDrop,
     maxSize: MAX_FILE_SIZE,
     noClick: true,
     noKeyboard: true,
   })
-  return { files, clearFiles: () => setFiles([]), getRootProps, getInputProps, isDragActive, open }
+  return { files, clearFiles: () => setFiles([]), getRootProps, getInputProps, isDragActive, openFileDialog }
 }

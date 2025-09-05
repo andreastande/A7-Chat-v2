@@ -21,13 +21,9 @@ export async function POST(req: Request) {
   }
 
   const dbMessages = await getUIMessagesInChat(userId, chatId)
+  const messages = [...dbMessages, message]
 
-  const alreadyStoredInDB = dbMessages.some((m) => m.id === message.id)
-  if (!alreadyStoredInDB) {
-    await insertUIMessageInChat(userId, chatId, message)
-  }
-
-  const messages = alreadyStoredInDB ? dbMessages : [...dbMessages, message]
+  await insertUIMessageInChat(userId, chatId, message)
 
   const result = streamText({
     model: model.provider.toLowerCase() + "/" + model.apiName,

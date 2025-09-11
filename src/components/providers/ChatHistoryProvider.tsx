@@ -1,8 +1,8 @@
 "use client"
 
-import { authClient } from "@/lib/auth-client"
+import { Chat } from "@/db/schema/chat"
+import { authClient } from "@/lib/auth/auth-client"
 import { cn } from "@/lib/utils"
-import type { Chat } from "@/types/chat"
 import * as React from "react"
 import { useModel } from "./ModelProvider"
 

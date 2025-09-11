@@ -1,6 +1,6 @@
 "use client"
 
-import { createChat, generateAndUpdateTitle } from "@/actions/chat"
+import { generateTitle, newChat, renameChat as renameChatDB } from "@/actions/chat"
 import { invalidateRouterCache } from "@/actions/router"
 import { useFileUpload } from "@/hooks/useFileUpload"
 import { UIMessage, useChat } from "@ai-sdk/react"
@@ -32,9 +32,9 @@ export default function Chat({ id, initialMessages = [], isNewChat = false }: Ch
         }
       },
     }),
-    onFinish: () => {
+    onFinish: async () => {
       if (isNewChat) {
-        invalidateRouterCache()
+        await invalidateRouterCache()
       }
     },
   })
@@ -44,15 +44,17 @@ export default function Chat({ id, initialMessages = [], isNewChat = false }: Ch
   const handleSendMessage = async (msg: string) => {
     if (isNewEmptyChat) {
       window.history.pushState({}, "", `/chat/${id}`)
-      await createChat(id) // db
+      await newChat(id) // db
     }
 
     sendMessage({ text: msg }, { body: { model } })
 
     if (isNewEmptyChat) {
       addChat(id) // optimistic
-      const title = await generateAndUpdateTitle(id, msg) // db
+
+      const title = await generateTitle(msg)
       renameChat(id, title) // optimistic
+      await renameChatDB(id, title) // db
     } else {
       touchChat(id) // optimistic
     }

@@ -1,6 +1,6 @@
 "use client"
 
-import { renameChatTitle } from "@/actions/chat"
+import { renameChat as renameChatDB } from "@/actions/chat"
 import { useChatHistory } from "@/components/providers/ChatHistoryProvider"
 import { useEffect, useRef } from "react"
 import { toast } from "sonner"
@@ -65,7 +65,7 @@ export default function ChatTitleEditor({
     closeEditor()
     renameChat(chatId, finalTitle)
 
-    toast.promise(renameChatTitle(chatId, finalTitle), {
+    toast.promise(renameChatDB(chatId, finalTitle), {
       loading: "Renaming chat…",
       success: `Chat "${initialTitle}" renamed to "${finalTitle}"!`,
       error: () => {

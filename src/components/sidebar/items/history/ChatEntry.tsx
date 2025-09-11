@@ -1,6 +1,6 @@
 "use client"
 
-import { deleteChat as deleteChatDb } from "@/actions/chat"
+import { removeChat as removeChatDB } from "@/actions/chat"
 import { useChatHistory } from "@/components/providers/ChatHistoryProvider"
 import {
   DropdownMenu,
@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { SidebarMenuSubAction, SidebarMenuSubButton, SidebarMenuSubItem } from "@/components/ui/sidebar"
-import { Chat } from "@/types/chat"
+import { Chat } from "@/db/schema/chat"
 import { Folder, FolderInput, FolderPlus, MoreVertical, PencilLine, Pin, Share, Trash } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
@@ -39,7 +39,7 @@ export default function ChatEntry({ chat }: { chat: Chat }) {
   }
 
   const handleDeleteChat = async () => {
-    toast.promise(deleteChatDb(chat.id), {
+    toast.promise(removeChatDB(chat.id), {
       loading: "Deleting chat…",
       success: () => {
         removeChat(chat.id)

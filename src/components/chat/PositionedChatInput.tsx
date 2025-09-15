@@ -15,24 +15,30 @@ export default function PositionedChatInput({ mode, ...chatInputProps }: Positio
 
   if (mode === "animate") {
     return (
-      <motion.div
-        initial={{ y: -(typeof window !== "undefined" ? window.innerHeight / 2 - 32 : 0) }}
-        animate={{ y: 0 }}
-        transition={{
-          type: "spring",
-          stiffness: 500,
-          damping: 40,
-        }}
-        className="fixed bottom-0 mb-8 w-full max-w-3xl"
-      >
-        <ChatInput {...chatInputProps} />
-      </motion.div>
+      <>
+        <motion.div
+          initial={{ y: -(typeof window !== "undefined" ? window.innerHeight / 2 - 32 : 0) }}
+          animate={{ y: 0 }}
+          transition={{
+            type: "spring",
+            stiffness: 500,
+            damping: 40,
+          }}
+          className="fixed bottom-0 z-10 mb-5 w-full max-w-3xl"
+        >
+          <ChatInput {...chatInputProps} />
+        </motion.div>
+        <div className="bg-sidebar fixed bottom-0 h-11 w-full max-w-3xl" />
+      </>
     )
   }
 
   return (
-    <div className="fixed bottom-0 mb-8 w-full max-w-3xl">
-      <ChatInput {...chatInputProps} />
-    </div>
+    <>
+      <div className="fixed bottom-0 z-10 mb-5 w-full max-w-3xl">
+        <ChatInput {...chatInputProps} />
+      </div>
+      <div className="bg-sidebar fixed bottom-0 h-11 w-full max-w-3xl" />
+    </>
   )
 }

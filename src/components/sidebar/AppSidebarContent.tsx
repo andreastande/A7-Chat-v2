@@ -1,5 +1,4 @@
-import { getChats } from "@/db/queries"
-import { verifySession } from "@/lib/dal"
+import { getChats } from "@/lib/dal/chat"
 import { SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu } from "../ui/sidebar"
 import ChatItem from "./items/ChatItem"
 import FilesItem from "./items/FilesItem"
@@ -8,8 +7,7 @@ import HistoryItem from "./items/history/HistoryItem"
 import ProjectsItem from "./items/project/ProjectsItem"
 
 export default async function AppSidebarContent() {
-  const { userId } = await verifySession()
-  const chats = await getChats(userId!) // Sidebar is only shown if user is authenticated, do can safely access userId
+  const chats = await getChats()
 
   return (
     <SidebarContent>

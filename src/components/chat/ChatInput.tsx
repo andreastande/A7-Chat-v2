@@ -1,22 +1,28 @@
 "use client"
 
+import { generateTitle, newChat, renameChat as renameChatDB } from "@/actions/chat"
 import { useAutoFocusOnTyping } from "@/hooks/useAutoFocusOnTyping"
-import { UseChatHelpers } from "@ai-sdk/react"
-import { UIMessage } from "ai"
-import { Plus, Send, Square } from "lucide-react"
+import { useChatStoreState } from "@ai-sdk-tools/store"
+import { Send, Square } from "lucide-react"
 import { useRef, useState } from "react"
 import TextareaAutosize from "react-textarea-autosize"
+import { useChatHistory } from "../providers/ChatHistoryProvider"
+import { useModel } from "../providers/ModelProvider"
 import { Button } from "../ui/button"
-import WithTooltip from "../WithTooltip"
+import ChatToolsMenu from "./ChatToolsMenu"
 import ModelPicker from "./model-picker/ModelPicker"
 
 interface ChatInputProps {
-  status?: UseChatHelpers<UIMessage>["status"]
-  stop?: UseChatHelpers<UIMessage>["stop"]
-  onSend: (msg: string) => void
+  isNewChat?: boolean
+  files: File[]
+  openFileDialog: () => void
 }
 
-export default function ChatInput({ status, stop, onSend }: ChatInputProps) {
+export default function ChatInput({ isNewChat = false, files, openFileDialog }: ChatInputProps) {
+  const { id: chatId, status, stop, sendMessage } = useChatStoreState()
+  const { model } = useModel()
+  const { renameChat, touchChat, addChat } = useChatHistory()
+
   const [input, setInput] = useState("")
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
@@ -27,12 +33,29 @@ export default function ChatInput({ status, stop, onSend }: ChatInputProps) {
   const canStop = status === "streaming" || status === "submitted"
   const canSend = !canStop && input.trim() !== ""
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (canSend) {
-      onSend(input.trim())
       setInput("")
+      const msg = input.trim()
+
+      if (isNewChat) {
+        window.history.pushState({}, "", `/chat/${chatId}`)
+        await newChat(chatId) // db
+      }
+
+      sendMessage({ text: msg }, { body: { model } })
+
+      if (isNewChat) {
+        addChat(chatId) // optimistic
+
+        const title = await generateTitle(msg)
+        renameChat(chatId, title) // optimistic
+        await renameChatDB(chatId, title) // db
+      } else {
+        touchChat(chatId) // optimistic
+      }
     } else if (canStop) {
-      stop?.()
+      stop()
     }
   }
 
@@ -52,6 +75,13 @@ export default function ChatInput({ status, stop, onSend }: ChatInputProps) {
       onClick={handleFormClick}
       className="bg-background w-full cursor-text rounded-3xl p-4 shadow ring ring-zinc-950/10"
     >
+      {files.length > 0 && (
+        <div className="mb-2 flex gap-2">
+          {files.map((file) => (
+            <span key={file.name}>{file.name}</span>
+          ))}
+        </div>
+      )}
       <TextareaAutosize
         ref={textareaRef}
         autoFocus
@@ -71,16 +101,9 @@ export default function ChatInput({ status, stop, onSend }: ChatInputProps) {
 
       <div className="flex justify-between">
         <div className="flex -translate-x-2 items-center space-x-2">
-          <ModelPicker />
-
+          <ChatToolsMenu openFileDialog={openFileDialog} />
           <div className="h-5 w-px bg-zinc-950/10" />
-
-          <WithTooltip content="Add files and more" side="bottom">
-            <Button size="icon" variant="ghost" className="size-8 cursor-pointer">
-              <Plus />
-              <span className="sr-only">Add files and more</span>
-            </Button>
-          </WithTooltip>
+          <ModelPicker />
         </div>
 
         <Button

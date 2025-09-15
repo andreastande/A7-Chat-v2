@@ -1,11 +1,5 @@
-import { user } from "@/db/schema"
-import { createSelectSchema } from "drizzle-zod"
-import z from "zod"
+import { User } from "better-auth"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const userSchema = createSelectSchema(user)
-export type User = z.infer<typeof userSchema>
 
 const getInitials = (name: string) => {
   const parts = name.trim().split(/\s+/)
@@ -14,7 +8,7 @@ const getInitials = (name: string) => {
   return first + last
 }
 
-export default function ProfilePicture({ user }: { user: User }) {
+export default async function ProfilePicture({ user }: { user: User }) {
   return (
     <button className="size-8 cursor-pointer rounded-full shadow-md">
       <Avatar className="transition-all hover:brightness-90">

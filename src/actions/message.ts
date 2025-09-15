@@ -1,14 +1,15 @@
 "use server"
 
-import { insertUIMessageInChat as insertUIMessageInChatDb, isChatOwnedByUser } from "@/db/queries"
-import { verifySession } from "@/lib/dal"
-import { UIMessage } from "ai"
+import { deleteMessage } from "@/lib/dal/message"
+import { ChatNotFoundOrForbiddenError, NotAuthenticatedError } from "@/lib/errors"
+import { redirect } from "next/navigation"
 
-export async function insertUIMessageInChat(chatId: string, uiMessage: UIMessage) {
-  const { isAuth, userId } = await verifySession()
-
-  if (!isAuth) throw new Error("Unauthorized")
-  if (!(await isChatOwnedByUser(userId, chatId))) throw new Error("Forbidden")
-
-  await insertUIMessageInChatDb(userId, chatId, uiMessage)
+export async function removeMessage(messageId: string) {
+  try {
+    await deleteMessage(messageId)
+  } catch (e) {
+    if (e instanceof NotAuthenticatedError) redirect("/login")
+    if (e instanceof ChatNotFoundOrForbiddenError) redirect("/")
+    throw e
+  }
 }

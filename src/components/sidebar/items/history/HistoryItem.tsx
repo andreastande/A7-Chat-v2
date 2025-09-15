@@ -12,7 +12,7 @@ import {
   SidebarMenuSubItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { Chat } from "@/types/chat"
+import { Chat } from "@/db/schema/chat"
 import { ChevronRight, History } from "lucide-react"
 import { useEffect } from "react"
 import ChatEntry from "./ChatEntry"

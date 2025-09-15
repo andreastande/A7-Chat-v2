@@ -1,8 +1,6 @@
-import { verifySession } from "@/lib/dal"
-import Image from "next/image"
-import Link from "next/link"
-import { SidebarFooter, SidebarMenu, SidebarMenuButton } from "../ui/sidebar"
-import ProfilePicture, { User } from "./ProfilePicture"
+import { verifySession } from "@/lib/auth/session"
+import { SidebarFooter, SidebarMenu, SidebarMenuItem } from "../ui/sidebar"
+import ProfilePicture from "./ProfilePicture"
 
 export default async function AppSidebarFooter() {
   const { user } = await verifySession()
@@ -10,18 +8,9 @@ export default async function AppSidebarFooter() {
   return (
     <SidebarFooter className="flex h-16 items-center space-x-2">
       <SidebarMenu>
-        {user ? (
-          <ProfilePicture user={user as User} />
-        ) : (
-          <SidebarMenuButton asChild>
-            <Link href="/login">
-              <div className="relative size-5 shrink-0">
-                <Image src="/icons/LogInGradient.png" alt="Log in" fill />
-              </div>
-              <span>Sign in</span>
-            </Link>
-          </SidebarMenuButton>
-        )}
+        <SidebarMenuItem>
+          <ProfilePicture user={user} />
+        </SidebarMenuItem>
       </SidebarMenu>
     </SidebarFooter>
   )

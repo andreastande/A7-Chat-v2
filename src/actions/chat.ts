@@ -1,45 +1,49 @@
 "use server"
 
-import {
-  createChat as createChatDb,
-  deleteChat as deleteChatDb,
-  generateAndUpdateTitle as generateAndUpdateTitleDb,
-  isChatOwnedByUser,
-  renameChatTitle as renameChatTitleDb,
-} from "@/db/queries"
-import { verifySession } from "@/lib/dal"
+import { createChat, deleteChat, updateChatTitle } from "@/lib/dal/chat"
+import { ChatNotFoundOrForbiddenError, NotAuthenticatedError } from "@/lib/errors"
+import { generateText } from "ai"
+import { redirect } from "next/navigation"
 
-export async function createChat(chatId: string) {
-  const { isAuth, userId } = await verifySession()
-
-  if (!isAuth) throw new Error("Unauthorized")
-
-  await createChatDb(userId, chatId, "gpt-4.1-nano")
+export async function newChat(chatId: string) {
+  try {
+    await createChat(chatId, "gpt-4.1-nano")
+  } catch (e) {
+    if (e instanceof NotAuthenticatedError) redirect("/login")
+    throw e
+  }
 }
 
-export async function generateAndUpdateTitle(chatId: string, message: string) {
-  const { isAuth, userId } = await verifySession()
-
-  if (!isAuth) throw new Error("Unauthorized")
-  if (!(await isChatOwnedByUser(userId, chatId))) throw new Error("Forbidden")
-
-  return await generateAndUpdateTitleDb(userId, chatId, message)
+export async function removeChat(chatId: string) {
+  try {
+    await deleteChat(chatId)
+  } catch (e) {
+    if (e instanceof NotAuthenticatedError) redirect("/login")
+    if (e instanceof ChatNotFoundOrForbiddenError) redirect("/")
+    throw e
+  }
 }
 
-export async function renameChatTitle(chatId: string, newTitle: string) {
-  const { isAuth, userId } = await verifySession()
-
-  if (!isAuth) throw new Error("Unauthorized")
-  if (!(await isChatOwnedByUser(userId, chatId))) throw new Error("Forbidden")
-
-  await renameChatTitleDb(userId, chatId, newTitle)
+export async function renameChat(chatId: string, newTitle: string) {
+  try {
+    await updateChatTitle(chatId, newTitle)
+  } catch (e) {
+    if (e instanceof NotAuthenticatedError) redirect("/login")
+    if (e instanceof ChatNotFoundOrForbiddenError) redirect("/")
+    throw e
+  }
 }
 
-export async function deleteChat(chatId: string) {
-  const { isAuth, userId } = await verifySession()
+// TODO: Should perhaps be a route handler?
+export async function generateTitle(message: string) {
+  const { text: newTitle } = await generateText({
+    model: "openai/gpt-4.1-nano",
+    system: `
+      You are a helpful assistant that writes concise, topic-specific chat titles 
+      based on the user's first message. Limit to 2-5 words.
+    `,
+    prompt: message,
+  })
 
-  if (!isAuth) throw new Error("Unauthorized")
-  if (!(await isChatOwnedByUser(userId, chatId))) throw new Error("Forbidden")
-
-  await deleteChatDb(userId, chatId)
+  return newTitle
 }

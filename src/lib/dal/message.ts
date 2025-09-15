@@ -1,5 +1,5 @@
 import { db } from "@/db"
-import { messages, parts } from "@/db/schema/chat"
+import { chats, messages, parts } from "@/db/schema/chat"
 import { UIMessage } from "ai"
 import { and, eq, gt } from "drizzle-orm"
 import "server-only"
@@ -63,6 +63,8 @@ export async function upsertMessage({
     if (mappedDBUIParts.length > 0) {
       await tx.insert(parts).values(mappedDBUIParts)
     }
+
+    await tx.update(chats).set({ updatedAt: new Date() }).where(eq(chats.id, chatId))
   })
 }
 
@@ -84,5 +86,7 @@ export async function deleteMessage(messageId: string) {
 
     // Delete the target message (cascade delete will handle parts)
     await tx.delete(messages).where(eq(messages.id, messageId))
+
+    await tx.update(chats).set({ updatedAt: new Date() }).where(eq(chats.id, message.chatId))
   })
 }

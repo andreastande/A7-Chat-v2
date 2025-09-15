@@ -3,7 +3,7 @@ import { assertChatOwnership } from "@/lib/dal/guards"
 import { getMessages, upsertMessage } from "@/lib/dal/message"
 import { ChatNotFoundOrForbiddenError, NotAuthenticatedError } from "@/lib/errors"
 import { Model } from "@/types/model"
-import { convertToModelMessages, streamText, UIMessage } from "ai"
+import { convertToModelMessages, createIdGenerator, streamText, UIMessage } from "ai"
 import { NextResponse } from "next/server"
 
 // Allow streaming responses up to 30 seconds
@@ -38,6 +38,7 @@ export async function POST(req: Request) {
 
   return result.toUIMessageStreamResponse({
     originalMessages: messages,
+    generateMessageId: createIdGenerator(),
     onFinish: async ({ responseMessage }) => {
       await upsertMessage({ messageId: responseMessage.id, message: responseMessage, chatId })
     },

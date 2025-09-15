@@ -1,24 +1,28 @@
 "use client"
 
+import { generateTitle, newChat, renameChat as renameChatDB } from "@/actions/chat"
 import { useAutoFocusOnTyping } from "@/hooks/useAutoFocusOnTyping"
-import { UseChatHelpers } from "@ai-sdk/react"
-import { UIMessage } from "ai"
+import { useChatStoreState } from "@ai-sdk-tools/store"
 import { Send, Square } from "lucide-react"
 import { useRef, useState } from "react"
 import TextareaAutosize from "react-textarea-autosize"
+import { useChatHistory } from "../providers/ChatHistoryProvider"
+import { useModel } from "../providers/ModelProvider"
 import { Button } from "../ui/button"
 import ChatToolsMenu from "./ChatToolsMenu"
 import ModelPicker from "./model-picker/ModelPicker"
 
 interface ChatInputProps {
+  isNewChat?: boolean
   files: File[]
-  status?: UseChatHelpers<UIMessage>["status"]
-  stop?: UseChatHelpers<UIMessage>["stop"]
-  onSend: (msg: string) => void
   openFileDialog: () => void
 }
 
-export default function ChatInput({ files, status, stop, onSend, openFileDialog }: ChatInputProps) {
+export default function ChatInput({ isNewChat = false, files, openFileDialog }: ChatInputProps) {
+  const { id: chatId, status, stop, sendMessage } = useChatStoreState()
+  const { model } = useModel()
+  const { renameChat, touchChat, addChat } = useChatHistory()
+
   const [input, setInput] = useState("")
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
@@ -29,12 +33,29 @@ export default function ChatInput({ files, status, stop, onSend, openFileDialog 
   const canStop = status === "streaming" || status === "submitted"
   const canSend = !canStop && input.trim() !== ""
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (canSend) {
-      onSend(input.trim())
       setInput("")
+      const msg = input.trim()
+
+      if (isNewChat) {
+        window.history.pushState({}, "", `/chat/${chatId}`)
+        await newChat(chatId) // db
+      }
+
+      sendMessage({ text: msg }, { body: { model } })
+
+      if (isNewChat) {
+        addChat(chatId) // optimistic
+
+        const title = await generateTitle(msg)
+        renameChat(chatId, title) // optimistic
+        await renameChatDB(chatId, title) // db
+      } else {
+        touchChat(chatId) // optimistic
+      }
     } else if (canStop) {
-      stop?.()
+      stop()
     }
   }
 

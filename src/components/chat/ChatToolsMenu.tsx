@@ -13,18 +13,12 @@ export default function ChatToolsMenu({ openFileDialog }: { openFileDialog: () =
   return (
     <DropdownMenu>
       <WithTooltip content="Add files and more" side="bottom">
-        <div>
-          <DropdownMenuTrigger asChild>
-            <Button
-              size="icon"
-              variant="ghost"
-              className="data-[state=open]:bg-accent data-[state=open]:text-accent-foreground dark:data-[state=open]:bg-accent/50 size-8 cursor-pointer"
-            >
-              <Plus />
-              <span className="sr-only">Add files and more</span>
-            </Button>
-          </DropdownMenuTrigger>
-        </div>
+        <DropdownMenuTrigger asChild>
+          <Button size="icon" variant="ghost" className="size-8 cursor-pointer">
+            <Plus />
+            <span className="sr-only">Add files and more</span>
+          </Button>
+        </DropdownMenuTrigger>
       </WithTooltip>
       <DropdownMenuContent side="bottom" align="start" onCloseAutoFocus={(e) => e.preventDefault()}>
         <DropdownMenuItem onClick={openFileDialog}>

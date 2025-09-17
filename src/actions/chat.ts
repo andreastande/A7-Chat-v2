@@ -1,5 +1,6 @@
 "use server"
 
+import { verifySession } from "@/lib/auth/session"
 import { createChat, deleteChat, updateChatTitle } from "@/lib/dal/chat"
 import { ChatNotFoundOrForbiddenError, NotAuthenticatedError } from "@/lib/errors"
 import { generateText } from "ai"
@@ -36,6 +37,13 @@ export async function renameChat(chatId: string, newTitle: string) {
 
 // TODO: Should perhaps be a route handler?
 export async function generateTitle(message: string) {
+  try {
+    await verifySession()
+  } catch (e) {
+    if (e instanceof NotAuthenticatedError) redirect("/login")
+    throw e
+  }
+
   const { text: newTitle } = await generateText({
     model: "openai/gpt-4.1-nano",
     system: `

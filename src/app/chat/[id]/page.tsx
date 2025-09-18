@@ -21,7 +21,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
     <>
       <AppSidebar collapsible="icon" />
       <main className="bg-sidebar relative w-full">
-        <SidebarTrigger className="sticky top-3 mt-3 ml-3 cursor-pointer md:hidden" />
+        <SidebarTrigger className="sticky top-3 mt-3 ml-3 md:hidden" />
 
         <Chat id={id} initialMessages={initialMessages} />
       </main>

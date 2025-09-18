@@ -66,7 +66,7 @@ export default function ProjectsItem() {
                 */}
 
                   <SidebarMenuSubItem>
-                    <SidebarMenuSubButton className="cursor-pointer text-xs font-semibold whitespace-nowrap text-gray-600 hover:bg-transparent active:bg-transparent">
+                    <SidebarMenuSubButton className="text-xs font-semibold whitespace-nowrap text-gray-600 hover:bg-transparent active:bg-transparent">
                       See all
                     </SidebarMenuSubButton>
                   </SidebarMenuSubItem>
@@ -79,7 +79,7 @@ export default function ProjectsItem() {
         <HoverCard openDelay={150} closeDelay={150}>
           <SidebarMenuItem>
             <HoverCardTrigger asChild>
-              <SidebarMenuButton asChild isActive={isActive} className="cursor-pointer">
+              <SidebarMenuButton asChild isActive={isActive}>
                 <Link href="#">
                   <Folder />
                   <span className="sr-only">Projects</span>

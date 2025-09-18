@@ -33,7 +33,7 @@ export default function HistoryItem({ serverChats }: { serverChats: Chat[] }) {
         <Collapsible defaultOpen className="group/collapsible">
           <SidebarMenuItem>
             <div className="group/sidebar-menu-btn">
-              <SidebarMenuButton className="cursor-pointer">
+              <SidebarMenuButton>
                 <History />
                 <span className="ml-2 font-medium">History</span>
               </SidebarMenuButton>
@@ -56,7 +56,7 @@ export default function HistoryItem({ serverChats }: { serverChats: Chat[] }) {
                   ))}
 
                   <SidebarMenuSubItem>
-                    <SidebarMenuSubButton className="cursor-pointer text-xs font-semibold whitespace-nowrap text-gray-600 hover:bg-transparent active:bg-transparent">
+                    <SidebarMenuSubButton className="text-xs font-semibold whitespace-nowrap text-gray-600 hover:bg-transparent active:bg-transparent">
                       See all
                     </SidebarMenuSubButton>
                   </SidebarMenuSubItem>
@@ -69,7 +69,7 @@ export default function HistoryItem({ serverChats }: { serverChats: Chat[] }) {
         <HoverCard openDelay={150} closeDelay={150}>
           <SidebarMenuItem>
             <HoverCardTrigger asChild>
-              <SidebarMenuButton className="cursor-pointer">
+              <SidebarMenuButton>
                 <History />
                 <span className="sr-only">Chat history</span>
               </SidebarMenuButton>

@@ -61,7 +61,7 @@ export default function ModelPicker() {
             variant="ghost"
             size="sm"
             aria-label={`Select model, current: ${model.label}`}
-            className="cursor-pointer font-normal"
+            className="font-normal"
           >
             <Image
               src={`/logos/model-families/${model.modelFamily}.svg`}

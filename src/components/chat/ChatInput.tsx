@@ -110,7 +110,7 @@ export default function ChatInput({ isNewChat = false, files, openFileDialog }: 
           size="icon"
           variant="ghost"
           disabled={!canSend && !canStop}
-          className="size-8 cursor-pointer bg-blue-500 not-disabled:hover:bg-blue-600 disabled:bg-blue-200"
+          className="size-8 bg-blue-500 not-disabled:hover:bg-blue-600 disabled:bg-blue-200"
         >
           {canStop ? <Square className="text-primary-foreground" /> : <Send className="text-primary-foreground" />}
           <span className="sr-only">{canStop ? "Stop message stream" : "Send prompt"}</span>

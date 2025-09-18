@@ -14,7 +14,7 @@ export default function ChatToolsMenu({ openFileDialog }: { openFileDialog: () =
     <DropdownMenu>
       <WithTooltip content="Add files and more" side="bottom">
         <DropdownMenuTrigger asChild>
-          <Button size="icon" variant="ghost" className="size-8 cursor-pointer">
+          <Button size="icon" variant="ghost" className="size-8">
             <Plus />
             <span className="sr-only">Add files and more</span>
           </Button>

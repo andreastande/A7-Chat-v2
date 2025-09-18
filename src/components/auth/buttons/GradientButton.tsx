@@ -15,11 +15,7 @@ export function GradientButton({ loading = false, className, children, ...button
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4, ease: "easeOut" }}>
       <Button
-        className={cn(
-          "w-full cursor-pointer bg-gradient-to-r font-semibold text-white transition-colors",
-          gradientClasses,
-          className
-        )}
+        className={cn("w-full bg-gradient-to-r font-semibold text-white transition-colors", gradientClasses, className)}
         {...buttonProps}
       >
         {children}

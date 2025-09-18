@@ -16,7 +16,7 @@ export default async function Home() {
     <>
       {session && <AppSidebar collapsible="icon" />}
       <main className="bg-sidebar relative w-full">
-        {session && <SidebarTrigger className="sticky top-3 mt-3 ml-3 cursor-pointer md:hidden" />}
+        {session && <SidebarTrigger className="sticky top-3 mt-3 ml-3 md:hidden" />}
 
         <Chat id={crypto.randomUUID()} isNewChat />
       </main>

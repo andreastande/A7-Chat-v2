@@ -38,7 +38,7 @@ export default function ScrollToBottom() {
             <Button
               variant="outline"
               onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" })}
-              className="size-8 cursor-pointer rounded-full"
+              className="size-8 rounded-full"
             >
               <ArrowDown />
             </Button>

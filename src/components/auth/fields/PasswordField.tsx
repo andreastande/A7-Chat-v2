@@ -38,7 +38,7 @@ export function PasswordField<T extends FieldValues>({ control, showForgotPasswo
                   <Button
                     type="button"
                     variant="ghost"
-                    className="absolute top-1/2 right-2 size-7 -translate-y-1/2 cursor-pointer"
+                    className="absolute top-1/2 right-2 size-7 -translate-y-1/2"
                     onClick={() => setShowPassword((prev) => !prev)}
                   >
                     {showPassword ? <Eye /> : <EyeClosed />}

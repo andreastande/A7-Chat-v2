@@ -85,7 +85,7 @@ export default function ModelPicker() {
           </div>
           <div className="flex-1">
             <ScrollArea className="h-60 pb-0.5">
-              <div className="flex flex-col space-y-0.25 p-1.5">
+              <div className="flex flex-col p-1.5">
                 {filter === "favorites" ? (
                   <>
                     <Model model={getModel("openai/gpt-5")} closeModelPicker={closeModelPicker} onHover={handleHover} />

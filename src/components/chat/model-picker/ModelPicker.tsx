@@ -1,116 +1,119 @@
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { MODELS_BY_PROVIDER } from "@/config/models"
-import { Model, PROVIDERS } from "@/types/model"
-import Image from "next/image"
-import { Button } from "../../ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
-  DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-} from "../../ui/dropdown-menu"
-import WithTooltip from "../../WithTooltip"
-
 import { useModel } from "@/components/providers/ModelProvider"
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
-import { Info } from "lucide-react"
-import ModelHoverContent from "./ModelHoverContent"
-
-function ModelList({ models, hoverCardSideOffset }: { models: Model[]; hoverCardSideOffset: number }) {
-  const { setModel } = useModel()
-
-  return models.map((model) => (
-    <HoverCard key={model.label} openDelay={120} closeDelay={120}>
-      <DropdownMenuItem onClick={() => setModel(model)} className="justify-between">
-        <div className="flex gap-2">
-          <Image
-            src={`/logos/model-families/${model.modelFamily}.svg`}
-            alt={`Model family ${model.modelFamily}`}
-            width={13}
-            height={13}
-          />
-          <span className="text-[13px]">{model.label}</span>
-        </div>
-
-        <HoverCardTrigger>
-          <Info className="hidden size-3.5 group-focus/dropdown-menu-item:flex" />
-        </HoverCardTrigger>
-      </DropdownMenuItem>
-
-      <HoverCardContent side="right" align="start" className="w-80" sideOffset={hoverCardSideOffset} alignOffset={-9}>
-        <ModelHoverContent model={model} />
-      </HoverCardContent>
-    </HoverCard>
-  ))
-}
+import { Button } from "@/components/ui/button"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Toggle } from "@/components/ui/toggle"
+import WithTooltip from "@/components/WithTooltip"
+import { getModel, getModelProvider, getModels, getProviders } from "@/lib/model"
+import { Model as ModelT, ProviderId } from "@/types/model"
+import { Heart } from "lucide-react"
+import Image from "next/image"
+import { useCallback, useState } from "react"
+import Model from "./Model"
+import ModelInfo from "./ModelInfo"
+import Provider from "./Provider"
 
 export default function ModelPicker() {
-  const { model, recentModels } = useModel()
+  const { selectedModel } = useModel()
+
+  const [open, setOpen] = useState(false)
+  const [filter, setFilter] = useState<"favorites" | ProviderId | undefined>("favorites")
+
+  const [infoModel, setInfoModel] = useState<ModelT>(selectedModel)
+
+  const handleHover = useCallback((model: ModelT) => {
+    setInfoModel(model)
+  }, [])
+
+  const toggleModelPicker = (open: boolean) => {
+    setOpen(open)
+    if (!open) {
+      setInfoModel(selectedModel)
+      setTimeout(() => setFilter("favorites"), 100)
+    }
+  }
+
+  const closeModelPicker = () => toggleModelPicker(false) // TODO: useCallback?
 
   return (
-    <DropdownMenu>
-      <WithTooltip content="Select model" side="bottom">
-        <DropdownMenuTrigger asChild>
+    <Popover open={open} onOpenChange={toggleModelPicker}>
+      <WithTooltip content="Select model" side="bottom" open={open ? false : undefined}>
+        <PopoverTrigger asChild>
           <Button
             variant="ghost"
             size="sm"
-            aria-label={`Select model, current: ${model.label}`}
+            aria-label={`Select model, current: ${selectedModel.name}`}
             className="font-normal"
           >
             <Image
-              src={`/logos/model-families/${model.modelFamily}.svg`}
-              alt={`${model.modelFamily} logo`}
+              src={getModelProvider(selectedModel).logoPath}
+              alt={`${getModelProvider(selectedModel).name} logo`}
               width={16}
               height={16}
             />
-            {model.label}
+            {selectedModel.name}
           </Button>
-        </DropdownMenuTrigger>
+        </PopoverTrigger>
       </WithTooltip>
 
-      <DropdownMenuContent side="bottom" align="start" onCloseAutoFocus={(e) => e.preventDefault()} className="w-54">
-        {recentModels.length > 1 && (
-          <>
-            <DropdownMenuLabel>Recently used</DropdownMenuLabel>
-            <ModelList models={recentModels} hoverCardSideOffset={18} />
-            <DropdownMenuSeparator className="mx-2" />
-            <DropdownMenuLabel>Providers</DropdownMenuLabel>
-          </>
-        )}
-
-        {PROVIDERS.map((provider) => (
-          <DropdownMenuSub key={provider}>
-            <DropdownMenuSubTrigger>
-              {provider === "xAI" ? (
-                <div className="size-4">
-                  <Image src={`/logos/providers/${provider}.svg`} alt={`${provider} logo`} width={12.5} height={12.5} />
-                </div>
-              ) : (
-                <Image src={`/logos/providers/${provider}.svg`} alt={`${provider} logo`} width={16} height={16} />
-              )}
-              {provider}
-            </DropdownMenuSubTrigger>
-
-            <DropdownMenuPortal>
-              <DropdownMenuSubContent className="w-50">
-                {MODELS_BY_PROVIDER[provider].length > 6 ? (
-                  <ScrollArea className="h-42 pr-3">
-                    <ModelList models={MODELS_BY_PROVIDER[provider]} hoverCardSideOffset={30} />
-                  </ScrollArea>
+      <PopoverContent
+        side="bottom"
+        align="start"
+        onCloseAutoFocus={(e) => e.preventDefault()}
+        className="grid h-70 w-100 grid-cols-2 divide-x !p-0"
+      >
+        <div className="divide-y">
+          <div className="flex h-10 items-center justify-between p-1.5">
+            <Toggle
+              pressed={filter === "favorites"}
+              onPressedChange={(pressed) => (pressed ? setFilter("favorites") : setFilter(undefined))}
+              className="hover:text-accent-foreground mr-4 size-7 min-w-7 px-0 hover:bg-sky-50 data-[state=on]:bg-sky-100"
+            >
+              <Heart className="size-3.5" />
+              <span className="sr-only">Your favorite models</span>
+            </Toggle>
+            <div className="flex space-x-0.5">
+              {getProviders().map((provider) => (
+                <Provider
+                  key={provider.id}
+                  provider={provider}
+                  isSelected={provider.id === filter}
+                  onSelectProvider={(select) => (select ? setFilter(provider.id) : setFilter(undefined))}
+                />
+              ))}
+            </div>
+          </div>
+          <div className="flex-1">
+            <ScrollArea className="h-60 pb-0.5">
+              <div className="flex flex-col space-y-0.25 p-1.5">
+                {filter === "favorites" ? (
+                  <>
+                    <Model model={getModel("openai/gpt-5")} closeModelPicker={closeModelPicker} onHover={handleHover} />
+                    <Model
+                      model={getModel("anthropic/claude-sonnet-4.5")}
+                      closeModelPicker={closeModelPicker}
+                      onHover={handleHover}
+                    />
+                    <Model
+                      model={getModel("google/gemini-2.5-flash")}
+                      closeModelPicker={closeModelPicker}
+                      onHover={handleHover}
+                    />
+                    <Model model={getModel("xai/grok-4")} closeModelPicker={closeModelPicker} onHover={handleHover} />
+                  </>
                 ) : (
-                  <ModelList models={MODELS_BY_PROVIDER[provider]} hoverCardSideOffset={18} />
+                  getModels(filter).map((model) => (
+                    <Model key={model.id} model={model} closeModelPicker={closeModelPicker} onHover={handleHover} />
+                  ))
                 )}
-              </DropdownMenuSubContent>
-            </DropdownMenuPortal>
-          </DropdownMenuSub>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+              </div>
+            </ScrollArea>
+          </div>
+        </div>
+        <div className="p-3">
+          <ModelInfo model={infoModel} />
+        </div>
+      </PopoverContent>
+    </Popover>
   )
 }

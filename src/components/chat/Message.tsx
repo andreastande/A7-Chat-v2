@@ -1,4 +1,4 @@
-import { UIMessage } from "ai"
+import { UIMessage } from "@/types/message"
 import { MemoizedMarkdown } from "./MemoizedMarkdown"
 
 function UserMessage({ message }: { message: UIMessage }) {

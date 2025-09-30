@@ -1,14 +1,14 @@
 "use server"
 
 import { verifySession } from "@/lib/auth/session"
-import { createChat, deleteChat, updateChatTitle } from "@/lib/dal/chat"
+import { createChat, deleteChat, updateChatModel, updateChatTitle } from "@/lib/dal/chat"
 import { ChatNotFoundOrForbiddenError, NotAuthenticatedError } from "@/lib/errors"
 import { generateText } from "ai"
 import { redirect } from "next/navigation"
 
-export async function newChat(chatId: string) {
+export async function newChat(chatId: string, modelId: string) {
   try {
-    await createChat(chatId, "gpt-4.1-nano")
+    await createChat(chatId, modelId)
   } catch (e) {
     if (e instanceof NotAuthenticatedError) redirect("/login")
     throw e
@@ -28,6 +28,16 @@ export async function removeChat(chatId: string) {
 export async function renameChat(chatId: string, newTitle: string) {
   try {
     await updateChatTitle(chatId, newTitle)
+  } catch (e) {
+    if (e instanceof NotAuthenticatedError) redirect("/login")
+    if (e instanceof ChatNotFoundOrForbiddenError) redirect("/")
+    throw e
+  }
+}
+
+export async function changeChatModel(chatId: string, modelId: string) {
+  try {
+    await updateChatModel(chatId, modelId)
   } catch (e) {
     if (e instanceof NotAuthenticatedError) redirect("/login")
     if (e instanceof ChatNotFoundOrForbiddenError) redirect("/")

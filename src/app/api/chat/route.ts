@@ -2,8 +2,10 @@ import { verifySession } from "@/lib/auth/session"
 import { assertChatOwnership } from "@/lib/dal/guards"
 import { getMessages, upsertMessage } from "@/lib/dal/message"
 import { ChatNotFoundOrForbiddenError, NotAuthenticatedError } from "@/lib/errors"
+import { computeMessageCostUSD } from "@/lib/usage"
+import { UIMessage } from "@/types/message"
 import { Model } from "@/types/model"
-import { convertToModelMessages, createIdGenerator, streamText, UIMessage } from "ai"
+import { convertToModelMessages, createIdGenerator, streamText } from "ai"
 import { NextResponse } from "next/server"
 
 // Allow streaming responses up to 30 seconds
@@ -31,13 +33,24 @@ export async function POST(req: Request) {
   await upsertMessage({ messageId: message.id, message, chatId })
 
   const result = streamText({
-    model: model.provider.toLowerCase() + "/" + model.apiName,
+    model: model.id,
     messages: convertToModelMessages(messages),
-    system: `In case the user asks which model you are, you are ${model.label}.`,
+    system: `In case the user asks which model you are, you are ${model.name}.`,
   })
 
   return result.toUIMessageStreamResponse({
     originalMessages: messages,
+    messageMetadata: ({ part }) => {
+      if (part.type === "finish") {
+        return {
+          model: model.id,
+          usage: {
+            tokens: part.totalUsage,
+            cost: computeMessageCostUSD(model.id, part.totalUsage),
+          },
+        }
+      }
+    },
     generateMessageId: createIdGenerator(),
     onFinish: async ({ responseMessage }) => {
       await upsertMessage({ messageId: responseMessage.id, message: responseMessage, chatId })

@@ -1,6 +1,6 @@
 import { db } from "@/db"
 import { chats, messages, parts } from "@/db/schema/chat"
-import { UIMessage } from "ai"
+import { UIMessage } from "@/types/message"
 import { and, eq, gt } from "drizzle-orm"
 import "server-only"
 import { verifySession } from "../auth/session"
@@ -26,6 +26,7 @@ export async function getMessages(chatId: string): Promise<UIMessage[]> {
     id: message.id,
     role: message.role,
     parts: message.parts.map((part) => mapDBPartToUIMessagePart(part)),
+    metadata: message.metadata ?? undefined,
   }))
 }
 
@@ -51,6 +52,7 @@ export async function upsertMessage({
         chatId,
         role: message.role,
         id: messageId,
+        metadata: message.metadata,
       })
       .onConflictDoUpdate({
         target: messages.id,

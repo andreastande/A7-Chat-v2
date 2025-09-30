@@ -19,8 +19,8 @@ interface ChatInputProps {
 }
 
 export default function ChatInput({ isNewChat = false, files, openFileDialog }: ChatInputProps) {
+  const { selectedModel } = useModel()
   const { id: chatId, status, stop, sendMessage } = useChatStoreState()
-  const { model } = useModel()
   const { renameChat, touchChat, addChat } = useChatHistory()
 
   const [input, setInput] = useState("")
@@ -40,13 +40,13 @@ export default function ChatInput({ isNewChat = false, files, openFileDialog }: 
 
       if (isNewChat) {
         window.history.pushState({}, "", `/chat/${chatId}`)
-        await newChat(chatId) // db
+        await newChat(chatId, selectedModel.id) // db
       }
 
-      sendMessage({ text: msg }, { body: { model } })
+      sendMessage({ text: msg }, { body: { model: selectedModel } })
 
       if (isNewChat) {
-        addChat(chatId) // optimistic
+        addChat(chatId, selectedModel.id) // optimistic
 
         const title = await generateTitle(msg)
         renameChat(chatId, title) // optimistic
@@ -61,7 +61,11 @@ export default function ChatInput({ isNewChat = false, files, openFileDialog }: 
 
   const handleFormClick = (e: React.MouseEvent<HTMLFormElement, MouseEvent>) => {
     const target = e.target as HTMLElement
-    if (textareaRef.current && target !== textareaRef.current && !target.closest("button")) {
+
+    const isFocusBlocker = target.closest("button, [data-slot='popover-content'], [data-slot='tooltip-content']")
+    const isFocusException = target.closest("[data-slot='model-option']")
+
+    if (textareaRef.current && target !== textareaRef.current && (!isFocusBlocker || isFocusException)) {
       textareaRef.current.focus()
     }
   }

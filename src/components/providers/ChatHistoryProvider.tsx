@@ -4,14 +4,13 @@ import { Chat } from "@/db/schema/chat"
 import { authClient } from "@/lib/auth/auth-client"
 import { cn } from "@/lib/utils"
 import * as React from "react"
-import { useModel } from "./ModelProvider"
 
 type ChatHistoryContextProps = {
   /** Sorted desc by updatedAt. */
   chats: Chat[]
 
   /** Add a chat. */
-  addChat: (chatId: string) => void
+  addChat: (chatId: string, modelId: string) => void
 
   /** Remove a chat by id. */
   removeChat: (chatId: string) => void
@@ -51,16 +50,15 @@ export function ChatHistoryProvider({
 }) {
   const [chats, setChats] = React.useState<Chat[]>(sortChatsByUpdatedAtDesc(initialChats))
   const { data: session } = authClient.useSession()
-  const { model } = useModel()
 
   const addChat = React.useCallback(
-    (chatId: string) => {
+    (chatId: string, modelId: string) => {
       setChats((prev) => {
         const newChat: Chat = {
           id: chatId,
           userId: session?.user.id ?? "", // TODO: Fix when user is guaranteed
           title: "New chat",
-          model: model.apiName,
+          model: modelId,
           createdAt: new Date(),
           updatedAt: new Date(),
         }
@@ -72,7 +70,7 @@ export function ChatHistoryProvider({
         return sortChatsByUpdatedAtDesc(next)
       })
     },
-    [session?.user.id, model.apiName]
+    [session?.user.id]
   )
 
   const removeChat = React.useCallback((chatId: string) => {

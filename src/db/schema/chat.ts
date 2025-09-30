@@ -1,4 +1,5 @@
-import { generateId, JSONValue, ToolUIPart, UIMessage } from "ai"
+import { MessageMetadata, UIMessage } from "@/types/message"
+import { generateId, JSONValue, ToolUIPart } from "ai"
 import { sql } from "drizzle-orm"
 import { check, index, integer, jsonb, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core"
 import { user } from "./auth"
@@ -32,6 +33,7 @@ export const messages = pgTable(
       .notNull(),
     createdAt: timestamp().defaultNow().notNull(),
     role: varchar().$type<UIMessage["role"]>().notNull(),
+    metadata: jsonb().$type<MessageMetadata>(),
   },
   (table) => [
     index("messages_chat_id_idx").on(table.chatId),

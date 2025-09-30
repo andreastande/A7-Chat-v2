@@ -2,11 +2,14 @@
 
 import { invalidateRouterCache } from "@/actions/router"
 import { useFileUpload } from "@/hooks/useFileUpload"
+import { useInitializeModel } from "@/hooks/useInitializeModel"
 import { useScrollOnMount } from "@/hooks/useScrollOnMount"
 import { useScrollOnSubmit } from "@/hooks/useScrollOnSubmit"
 import { cn } from "@/lib/utils"
+import { UIMessage } from "@/types/message"
+import { Model } from "@/types/model"
 import { useChat } from "@ai-sdk-tools/store"
-import { DefaultChatTransport, UIMessage } from "ai"
+import { DefaultChatTransport } from "ai"
 import FileDropOverlay from "../FileDropOverlay"
 import Message from "./Message"
 import PositionedChatInput from "./PositionedChatInput"
@@ -14,13 +17,14 @@ import ScrollToBottom from "./ScrollToBottom"
 
 interface ChatProps {
   id: string
+  initialModel: Model
   initialMessages?: UIMessage[]
   isNewChat?: boolean
 }
 
-export default function Chat({ id, initialMessages = [], isNewChat = false }: ChatProps) {
+export default function Chat({ id, initialModel, initialMessages = [], isNewChat = false }: ChatProps) {
   const { files, isDragActive, getRootProps, getInputProps, openFileDialog } = useFileUpload()
-  const { messages } = useChat({
+  const { messages } = useChat<UIMessage>({
     id,
     messages: initialMessages,
     transport: new DefaultChatTransport({
@@ -36,6 +40,8 @@ export default function Chat({ id, initialMessages = [], isNewChat = false }: Ch
       }
     },
   })
+
+  useInitializeModel(initialModel)
 
   useScrollOnSubmit()
   useScrollOnMount()

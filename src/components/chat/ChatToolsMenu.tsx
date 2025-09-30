@@ -1,4 +1,5 @@
 import { Paperclip, Plus } from "lucide-react"
+import { useState } from "react"
 import { Button } from "../ui/button"
 import {
   DropdownMenu,
@@ -10,9 +11,11 @@ import {
 import WithTooltip from "../WithTooltip"
 
 export default function ChatToolsMenu({ openFileDialog }: { openFileDialog: () => void }) {
+  const [open, setOpen] = useState(false)
+
   return (
-    <DropdownMenu>
-      <WithTooltip content="Add files and more" side="bottom">
+    <DropdownMenu open={open} onOpenChange={setOpen} modal={false}>
+      <WithTooltip content="Add files and more" side="bottom" open={open ? false : undefined}>
         <DropdownMenuTrigger asChild>
           <Button size="icon" variant="ghost" className="size-8">
             <Plus />
